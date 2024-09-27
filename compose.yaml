@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_DATABASE=film_affinity_fruna'
+      - 'MYSQL_PASSWORD=secret'
+      - 'MYSQL_ROOT_PASSWORD=verysecret'
+      - 'MYSQL_USER=myuser'
+    ports:
+      - '3306'
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  sonarqube:
+    image: 'sonarqube:9.9.6-community'
+    container_name: sonarqube
+    ports:
+      - '9000:9000'
