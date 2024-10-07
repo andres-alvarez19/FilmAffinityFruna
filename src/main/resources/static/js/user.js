@@ -19,7 +19,7 @@ function submitUserForm(event) {
         },
         body: JSON.stringify(user)
     })
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
             messageDiv.innerHTML = '<p style="color: green;" >User created successfully</p>';
         })
