@@ -1,0 +1,14 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tailwindcss -i ./css/input.css -o ../resources/static/css/output.css",
+    "watch": "tailwindcss --watch -i ./css/input.css -o ../resources/static/css/output.css"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.13"
+  },
+  "dependencies": {
+    "@tailwindcss/forms": "^0.5.7"
+  }
+}

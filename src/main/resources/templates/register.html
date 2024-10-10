@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Film Affinity Fruna</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/output.css}">
+</head>
+<body>
+<nav th:insert="~{components/navbar :: navbar}"></nav>
+
+<div class="relative flex size-full min-h-screen flex-col bg-[#F8F9FB] group/design-root overflow-x-hidden" style='font-family: "Be Vietnam Pro", "Noto Sans", sans-serif;'>
+    <div class="layout-container flex h-full grow flex-col">
+        <div class="px-40 flex flex-1 justify-center py-5">
+            <form id="userForm">
+                <div class="layout-content-container flex flex-col w-[512px] max-w-[512px] py-5 flex-1">
+                    <h2 class="text-[#141C24] tracking-light text-[28px] font-bold leading-tight px-4 text-center pb-3 pt-5">Join Moviepedia</h2>
+                    <div class="flex flex-col gap-2 px-4 py-3">
+                        <p class="text-[#141C24] text-base font-medium leading-normal">Name</p>
+                        <label class="flex flex-col flex-1">
+                            <input
+                                    id="name"
+                                    placeholder="Enter your name"
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#141C24] focus:outline-0 focus:ring-0 border-none bg-[#E4E9F1] focus:border-none h-14 placeholder:text-[#3F5374] p-4 text-base font-normal leading-normal"
+                            />
+                        </label>
+                    </div>
+                    <div class="flex flex-col gap-2 px-4 py-3">
+                        <p class="text-[#141C24] text-base font-medium leading-normal">Email</p>
+                        <label class="flex flex-col flex-1">
+                            <input
+                                    id="email"
+                                    placeholder="Enter your email"
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#141C24] focus:outline-0 focus:ring-0 border-none bg-[#E4E9F1] focus:border-none h-14 placeholder:text-[#3F5374] p-4 text-base font-normal leading-normal"
+                                    value=""
+                            />
+                        </label>
+                    </div>
+                    <div class="flex flex-col gap-2 px-4 py-3">
+                        <p class="text-[#141C24] text-base font-medium leading-normal ">Password</p>
+                        <label class="flex flex-col flex-1">
+                            <input
+                                    id="password"
+                                    placeholder="Enter your password"
+                                    class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#141C24] focus:outline-0 focus:ring-0 border-none bg-[#E4E9F1] focus:border-none h-14 placeholder:text-[#3F5374] p-4 text-base font-normal leading-normal"
+                                    type="password"
+                            />
+                        </label>
+                    </div>
+                    <div class="flex px-4 py-3">
+                        <button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 px-5 flex-1 bg-[#F4C753] text-[#141C24] text-base font-bold leading-normal tracking-[0.015em]">
+                            <span class="truncate">Register</span>
+                        </button>
+                    </div>
+                    <div id="message">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/user.js}"></script>
+</body>
+</html>
