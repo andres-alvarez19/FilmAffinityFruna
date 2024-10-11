@@ -22,7 +22,7 @@ public class FilmAffinityFrunaApplication {
 		try (Connection connection = DriverManager.getConnection(url, user, password);
 			 Statement statement = connection.createStatement()) {
 
-			ResultSet resultSet = statement.executeQuery("SELECT FROM Actor");
+			ResultSet resultSet = statement.executeQuery("SELECT * FROM Actor");
 
 			while (resultSet.next()) {
 				String nombre = resultSet.getString("nombre");
