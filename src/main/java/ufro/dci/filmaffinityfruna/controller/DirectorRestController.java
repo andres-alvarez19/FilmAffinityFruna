@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import ufro.dci.filmaffinityfruna.model.entity.DirectorEntity;
 import ufro.dci.filmaffinityfruna.service.DirectorService;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/director")
@@ -45,9 +47,9 @@ public class DirectorRestController {
     }
 
     @GetMapping("/search/{name}")
-    public ResponseEntity<DirectorEntity> searchByName(@PathVariable(name = "name") String name) {
+    public ResponseEntity<List<DirectorEntity>> searchByName(@PathVariable(name = "name") String name) {
         try {
-            DirectorEntity director = directorService.searchByName(name);
+            List<DirectorEntity> director = directorService.searchByName(name);
             return new ResponseEntity<>(director, HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

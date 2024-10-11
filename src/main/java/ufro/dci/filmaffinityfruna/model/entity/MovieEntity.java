@@ -28,7 +28,7 @@ public class MovieEntity {
     private String synopsis;
 
     @ManyToOne
-    @JoinColumn(name = "id_director", nullable = false)
+    @JoinColumn(name = "director_id_director", nullable = false)
     private DirectorEntity director;
 
     @Column(name="pais", nullable = true)
@@ -44,7 +44,7 @@ public class MovieEntity {
     private String wikipediaLink;
 
     @ManyToOne
-    @JoinColumn(name = "nombre", nullable = false)
+    @JoinColumn(name = "genero_nombre", nullable = false)
     private GenreEntity genre;
 
     @OneToMany
