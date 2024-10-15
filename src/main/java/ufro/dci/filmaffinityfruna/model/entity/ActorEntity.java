@@ -20,7 +20,7 @@ public class ActorEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(name="id_actor")
-    private long id;
+    private int id;
 
     @Column(name="nombre", nullable = false)
     private String name;
@@ -31,14 +31,12 @@ public class ActorEntity {
     @Column(name="fecha_nacimiento", nullable = false)
     private LocalDate dateOfBirth;
 
-    @Column(name="fecha_defuncion", nullable = true)
+    @Column(name="fecha_defuncion")
     private LocalDate dateOfDeath;
 
-    @Column(name="enlace_wiki", nullable = true)
+    @Column(name="enlace_wiki")
     private String wikipediaLink;
 
-    @OneToMany
-    @JoinColumn(name = "actor_id_actor", nullable = false)
-    private Set<CastEntity> cast = new HashSet<>();
-
+    @OneToMany(mappedBy = "actor")
+    private Set<CastEntity> charactersPlayed = new HashSet<>();
 }

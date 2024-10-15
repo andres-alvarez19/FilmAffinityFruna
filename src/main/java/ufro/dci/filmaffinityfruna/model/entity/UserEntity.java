@@ -18,7 +18,7 @@ public class UserEntity {
     @Id
     @Column(name = "id_usuario")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @Column(name = "nombre", nullable = false)
     private String username;
@@ -32,8 +32,8 @@ public class UserEntity {
     @ManyToMany
     @JoinTable(
             name = "usuario_has_pelicula",
-            joinColumns = @JoinColumn(name = "usuario_id_usuario"),
-            inverseJoinColumns = @JoinColumn(name = "pelicula_id_pelicula")
+            joinColumns = @JoinColumn(name = "usuario_id_usuario", referencedColumnName = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "pelicula_id_pelicula", referencedColumnName = "id_pelicula")
     )
     private Set<MovieEntity> favoriteMovies = new HashSet<>();
 }

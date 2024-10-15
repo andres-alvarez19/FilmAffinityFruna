@@ -1,12 +1,12 @@
 package ufro.dci.filmaffinityfruna.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -17,10 +17,12 @@ import lombok.Setter;
 public class GenreEntity {
 
     @Id
-    @Column(name="id_genero", nullable = false)
+    @Column(name="nombre", nullable = false, unique = true, length = 45)
     private String name;
 
-    @Column(name="descripcion", nullable = true )
+    @Column(name="descripcion")
     private String description;
 
+    @OneToMany (mappedBy = "genre")
+    private Set<MovieEntity> movies = new HashSet<>();
 }

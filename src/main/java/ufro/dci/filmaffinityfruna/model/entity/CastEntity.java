@@ -16,17 +16,17 @@ public class CastEntity {
     @Id
     @Column(name = "id_reparto")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(name = "nombre_personaje", nullable = false)
     private String characterName;
 
     @ManyToOne
-    @JoinColumn(name = "id_actor", nullable = false)
+    @JoinColumn(name = "actor_id_actor", nullable = false)
     private ActorEntity actor;
 
     @ManyToOne
-    @JoinColumn(name = "id_pelicula", nullable = false)
+    @JoinColumn(name = "pelicula_id_pelicula", nullable = false)
     private MovieEntity movie;
 
 }

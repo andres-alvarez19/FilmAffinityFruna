@@ -102,14 +102,14 @@ CREATE TABLE IF NOT EXISTS `film_affinity_fruna`.`reparto` (
                                                                `actor_id_actor` INT NOT NULL,
                                                                `pelicula_id_pelicula` INT NOT NULL,
                                                                PRIMARY KEY (`id_reparto`),
-                                                               INDEX `fk_personaje_actor_idx` (`actor_id_actor` ASC) VISIBLE,
-                                                               INDEX `fk_personaje_pelicula1_idx` (`pelicula_id_pelicula` ASC) VISIBLE,
-                                                               CONSTRAINT `fk_personaje_actor`
+                                                               INDEX `fk_reparto_actor_idx` (`actor_id_actor` ASC) VISIBLE,
+                                                               INDEX `fk_reparto_pelicula1_idx` (`pelicula_id_pelicula` ASC) VISIBLE,
+                                                               CONSTRAINT `fk_reparto_actor`
                                                                    FOREIGN KEY (`actor_id_actor`)
                                                                        REFERENCES `film_affinity_fruna`.`actor` (`id_actor`)
                                                                        ON DELETE NO ACTION
                                                                        ON UPDATE NO ACTION,
-                                                               CONSTRAINT `fk_personaje_pelicula1`
+                                                               CONSTRAINT `fk_reparto_pelicula1`
                                                                    FOREIGN KEY (`pelicula_id_pelicula`)
                                                                        REFERENCES `film_affinity_fruna`.`pelicula` (`id_pelicula`)
                                                                        ON DELETE NO ACTION

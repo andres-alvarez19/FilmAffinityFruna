@@ -19,7 +19,8 @@ import java.util.Set;
 public class MovieEntity {
     @Id
     @Column(name="id_pelicula")
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     @Column(name="nombre", nullable = false)
     private String name;
@@ -31,7 +32,7 @@ public class MovieEntity {
     @JoinColumn(name = "director_id_director", nullable = false)
     private DirectorEntity director;
 
-    @Column(name="pais", nullable = true)
+    @Column(name="pais" )
     private String country;
 
     @Column(name="duracion", nullable = false)
@@ -40,18 +41,16 @@ public class MovieEntity {
     @Column(name="estreno", nullable = false)
     private LocalDate releaseYear;
 
-    @Column(name="enlace_wiki", nullable = true)
+    @Column(name="enlace_wiki")
     private String wikipediaLink;
 
     @ManyToOne
-    @JoinColumn(name = "genero_nombre", nullable = false)
+    @JoinColumn(name = "genero_nombre", nullable = false, referencedColumnName = "nombre")
     private GenreEntity genre;
-
-    @OneToMany
-    @JoinColumn(name = "pelicula_id_pelicula", nullable = false)
-    private Set<CastEntity> cast = new HashSet<>();
 
     @ManyToMany(mappedBy = "favoriteMovies")
     private Set<UserEntity> usersWhoFavorited= new HashSet<>();
 
+    @OneToMany(mappedBy = "movie")
+    private Set<CastEntity> cast = new HashSet<>();
 }
