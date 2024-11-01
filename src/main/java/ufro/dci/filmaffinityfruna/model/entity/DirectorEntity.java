@@ -1,15 +1,14 @@
 package ufro.dci.filmaffinityfruna.model.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,8 +19,9 @@ import java.time.LocalDate;
 public class DirectorEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id_director", nullable = false)
-    private Long id;
+    private int id;
 
     @Column(name="nombre", nullable = false)
     private String name;
@@ -37,4 +37,7 @@ public class DirectorEntity {
 
     @Column(name="enlace_wiki", nullable = true)
     private String wikipediaLink;
+
+    @OneToMany(mappedBy = "director")
+    private Set<MovieEntity> moviesDirected = new HashSet<>();
 }
