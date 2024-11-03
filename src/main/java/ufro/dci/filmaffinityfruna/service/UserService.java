@@ -21,7 +21,7 @@ public class UserService {
         }
     }
 
-    public void update(Long id, UserEntity modifiedUser) {
+    public void update(int id, UserEntity modifiedUser) {
         Optional<UserEntity> optionalUser = userRepository.findById(id);
         if (userRepository.existsByEmail(modifiedUser.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
@@ -37,7 +37,7 @@ public class UserService {
         }
     }
 
-    public void deleteUserById(Long id) {
+    public void deleteUserById(int id) {
         if(!userRepository.existsById(id)){
             throw new IllegalArgumentException("Usuario no encontrado");
         }else{
@@ -46,14 +46,15 @@ public class UserService {
     }
 
     public UserEntity searchByName(String name) {
-        if(!userRepository.existsByUsername(name)){
+        Optional<UserEntity> optionalUser = userRepository.findByUsername(name);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
             throw new IllegalArgumentException("Usuario no encontrado");
-        }else{
-            return userRepository.findByUsername(name);
         }
     }
 
-    public UserEntity findById(Long id) {
+    public UserEntity findById(long id) {
         Optional<UserEntity> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             return optionalUser.get();
