@@ -1,4 +1,4 @@
-package ufro.dci.filmaffinityfruna.controller;
+package ufro.dci.filmaffinityfruna.controller.exceptionHandlers;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ufro.dci.filmaffinityfruna.controller.GenreRestController;
 import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
 import ufro.dci.filmaffinityfruna.service.GenreService;
 
@@ -30,7 +31,7 @@ class GenreRestControllerExceptionTest {
         Mockito.when(genreService.searchByName("Action")).thenThrow(new RuntimeException("Error genérico"));
 
         // Realizar una petición GET y verificar la respuesta
-        mockMvc.perform(get("/genre")
+        mockMvc.perform(get("/genre/search")
                         .param("name", "Action")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
@@ -44,7 +45,7 @@ class GenreRestControllerExceptionTest {
                 .when(genreService).register(Mockito.any(GenreEntity.class));
 
         // Realizar una petición POST y verificar la respuesta
-        mockMvc.perform(post("/genre")
+        mockMvc.perform(post("/genre/register")
                         .content("{\"name\": \"Drama\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
@@ -53,7 +54,7 @@ class GenreRestControllerExceptionTest {
 
     @Test
     void testHandleValidationException() throws Exception {
-        mockMvc.perform(post("/genre")
+        mockMvc.perform(post("/genre/register")
                 .content("{}") // JSON vacío para provocar error de validación
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
