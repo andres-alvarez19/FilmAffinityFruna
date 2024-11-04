@@ -29,4 +29,28 @@ public class CastEntity {
     @JoinColumn(name = "pelicula_id_pelicula", nullable = false)
     private MovieEntity movie;
 
+    public String getName() {
+        return actor != null ? actor.getName() : null;
+    }
+
+    public void setName(String name) {
+        this.characterName = name;
+    }
+
+    @Override
+    public String toString() {
+        return "CastEntity{" +
+                "id=" + id +
+                ", characterName='" + characterName + '\'' +
+                ", actor=" + (actor != null ? actor.getName() : "null") +
+                '}';
+    }
+
+    public CastEntity(int id, String characterName, ActorEntity actor, MovieEntity movie) {
+        this.id = id;
+        this.characterName = characterName;
+        this.actor = actor;
+        this.movie = movie;
+    }
+
 }
