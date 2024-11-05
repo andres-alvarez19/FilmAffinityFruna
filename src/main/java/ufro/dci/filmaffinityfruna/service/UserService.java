@@ -21,7 +21,7 @@ public class UserService {
         }
     }
 
-    public void update(int id, UserEntity modifiedUser) {
+    public void update(long id, UserEntity modifiedUser) {
         Optional<UserEntity> optionalUser = userRepository.findById(id);
         if (userRepository.existsByEmail(modifiedUser.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
@@ -37,7 +37,7 @@ public class UserService {
         }
     }
 
-    public void deleteUserById(int id) {
+    public void deleteUserById(long id) {
         if(!userRepository.existsById(id)){
             throw new IllegalArgumentException("Usuario no encontrado");
         }else{

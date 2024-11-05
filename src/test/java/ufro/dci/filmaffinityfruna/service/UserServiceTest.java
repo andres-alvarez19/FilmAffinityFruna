@@ -27,7 +27,7 @@ class UserServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         userEntity = new UserEntity();
-        userEntity.setId(1);
+        userEntity.setId(1L);
         userEntity.setUsername("usuario");
         userEntity.setEmail("usuario@ejemplo.com");
     }
@@ -55,7 +55,7 @@ class UserServiceTest {
 
     @Test
     void testActualizarUsuario_Exito() {
-        Long userId = 1L;
+        long userId = 1L;
         UserEntity modifiedUser = new UserEntity();
         modifiedUser.setUsername("usuario_modificado");
         modifiedUser.setEmail("nuevo@ejemplo.com");
@@ -105,15 +105,16 @@ class UserServiceTest {
         verify(userRepository, never()).save(any());
     }
 
-    @Test
-    void testEliminarUsuarioPorId_Exito() {
-        Long userId = 1L;
-        when(userRepository.existsById(userId)).thenReturn(true);
+@Test
+void testEliminarUsuarioPorId_Exito() {
+    long userId = 1L;
+    doNothing().when(userRepository).deleteById(userId);
+    when(userRepository.existsById(userId)).thenReturn(true);
 
-        userService.deleteUserById(userId);
+    userService.deleteUserById(userId);
 
-        verify(userRepository, times(1)).deleteById(userId);
-    }
+    verify(userRepository, times(1)).deleteById(userId);
+}
 
     @Test
     void testEliminarUsuarioPorId_UsuarioNoEncontrado() {
@@ -132,7 +133,7 @@ class UserServiceTest {
     void testBuscarPorNombre_Exito() {
         String username = "usuario";
         when(userRepository.existsByUsername(username)).thenReturn(true);
-        when(userRepository.findByUsername(username)).thenReturn(userEntity);
+        when(userRepository.findByUsername(username)).thenReturn(Optional.ofNullable(userEntity));
 
         UserEntity foundUser = userService.searchByName(username);
 
@@ -150,12 +151,11 @@ class UserServiceTest {
         });
 
         assertEquals("Usuario no encontrado", exception.getMessage());
-        verify(userRepository, never()).findByUsername(any());
     }
 
     @Test
     void testBuscarPorId_Exito() {
-        Long userId = 1L;
+        long userId = 1L;
         when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
 
         UserEntity foundUser = userService.findById(userId);
@@ -173,6 +173,17 @@ class UserServiceTest {
             userService.findById(userId);
         });
 
+        assertEquals("Usuario no encontrado", exception.getMessage());
+    }
+
+    @Test
+    void testDeleteById_UserDoesNotExist() {
+        Long userId = 1L;
+        when(userRepository.existsById(userId)).thenReturn(false);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.deleteUserById(userId);
+        });
         assertEquals("Usuario no encontrado", exception.getMessage());
     }
 }

@@ -11,7 +11,6 @@ import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
 import ufro.dci.filmaffinityfruna.model.entity.CastEntity;
 import ufro.dci.filmaffinityfruna.repository.MovieRepository;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
@@ -39,7 +38,7 @@ class MovieServiceTest {
         movieEntity = new MovieEntity();
         movieEntity.setName("Película Test");
         movieEntity.setReleaseYear(LocalDate.ofEpochDay(2023));
-        movieEntity.setDuration(Time.valueOf(LocalTime.of(2, 0))); // 2 horas
+        movieEntity.setDuration(LocalTime.of(2, 0)); // 2 horas
 
         GenreEntity genre = new GenreEntity();
         genre.setName("Drama");
@@ -47,7 +46,7 @@ class MovieServiceTest {
 
         Set<CastEntity> castSet = new HashSet<>();
         CastEntity castMember = new CastEntity();
-        castMember.setName("Actor Test");
+        castMember.setCharacterName("Actor Test");
         castSet.add(castMember);
         movieEntity.setCast(castSet);
     }
@@ -80,7 +79,7 @@ class MovieServiceTest {
         MovieEntity peliculaModificada = new MovieEntity();
         peliculaModificada.setName("Película Modificada");
         peliculaModificada.setReleaseYear(LocalDate.of(2024, 1, 1));
-        peliculaModificada.setDuration(Time.valueOf(LocalTime.of(2, 10)));
+        peliculaModificada.setDuration(LocalTime.of(2, 10));
 
         GenreEntity nuevoGenero = new GenreEntity();
         nuevoGenero.setName("Comedia");
@@ -91,7 +90,7 @@ class MovieServiceTest {
         nuevoActor.setName("Actor Modificado");
         CastEntity nuevoMiembro = new CastEntity();
         nuevoMiembro.setActor(nuevoActor);
-        nuevoMiembro.setName("Nombre del Personaje Modificado");
+        nuevoMiembro.setCharacterName("Nombre del Personaje Modificado");
         nuevoReparto.add(nuevoMiembro);
         peliculaModificada.setCast(nuevoReparto);
 
@@ -99,10 +98,10 @@ class MovieServiceTest {
 
         assertEquals("Película Modificada", movieEntity.getName());
         assertEquals(2024, movieEntity.getReleaseYear().getYear());
-        assertEquals(LocalTime.of(2, 10), movieEntity.getDuration().toLocalTime());
+        assertEquals(LocalTime.of(2, 10), movieEntity.getDuration());
         assertEquals("Comedia", movieEntity.getGenre().getName());
         assertEquals(1, movieEntity.getCast().size());
-        assertEquals("Actor Modificado", movieEntity.getCast().iterator().next().getName());
+        assertEquals("Actor Modificado", movieEntity.getCast().iterator().next().getActor().getName());
         verify(movieRepository, times(1)).save(movieEntity);
     }
 
