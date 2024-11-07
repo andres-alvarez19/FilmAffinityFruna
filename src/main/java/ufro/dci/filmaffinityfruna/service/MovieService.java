@@ -22,7 +22,7 @@ public class MovieService {
         }
     }
 
-    public void update(Long id, MovieEntity updatedMovie) {
+    public void update(long id, MovieEntity updatedMovie) {
         Optional<MovieEntity> existingMovie = movieRepository.findById(id);
         if (existingMovie.isPresent()) {
             MovieEntity movie = existingMovie.get();
@@ -37,7 +37,7 @@ public class MovieService {
         }
     }
 
-    public void deleteMovieById(Long id) {
+    public void deleteMovieById(long id) {
         if (!movieRepository.existsById(id)) {
             throw new IllegalArgumentException("Película no encontrada");
         } else {
