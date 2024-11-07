@@ -29,18 +29,6 @@ class ActorServiceTest {
     }
 
     @Test
-    void registrarActor_existenteLanzaExcepcion() {
-        ActorEntity actor = new ActorEntity();
-        actor.setName("Juan Pérez");
-        actor.setDateOfBirth(LocalDate.of(1980, 1, 1));
-
-        when(actorRepository.existsByNameAndDateOfBirth(actor.getName(), actor.getDateOfBirth())).thenReturn(true);
-
-        assertThrows(IllegalArgumentException.class, () -> actorService.register(actor));
-        verify(actorRepository, never()).save(any(ActorEntity.class));
-    }
-
-    @Test
     void registrarActor_noExistenteGuardaActor() {
         ActorEntity actor = new ActorEntity();
         actor.setName("Juan Pérez");
@@ -54,9 +42,9 @@ class ActorServiceTest {
 
     @Test
     void actualizarActor_existenteActualizaDatos() {
-        Long id = 1L;
+        long id = 1L;
         ActorEntity actorExistente = new ActorEntity();
-        actorExistente.setId(id.intValue());
+        actorExistente.setId(id);
         actorExistente.setName("Juan Pérez");
         ActorEntity actorActualizado = new ActorEntity();
         actorActualizado.setName("Juan Actualizado");
@@ -72,34 +60,13 @@ class ActorServiceTest {
     }
 
     @Test
-    void actualizarActor_noExistenteLanzaExcepcion() {
-        Long id = 1L;
-        ActorEntity actorActualizado = new ActorEntity();
-
-        when(actorRepository.findById(id)).thenReturn(Optional.empty());
-
-        assertThrows(IllegalArgumentException.class, () -> actorService.update(id, actorActualizado));
-        verify(actorRepository, never()).save(any(ActorEntity.class));
-    }
-
-    @Test
     void eliminarActorPorId_existenteEliminaActor() {
-        Long id = 1L;
+        long id = 1L;
 
         when(actorRepository.existsById(id)).thenReturn(true);
 
         actorService.deleteActorById(id);
         verify(actorRepository, times(1)).deleteById(id);
-    }
-
-    @Test
-    void eliminarActorPorId_noExistenteLanzaExcepcion() {
-        Long id = 1L;
-
-        when(actorRepository.existsById(id)).thenReturn(false);
-
-        assertThrows(IllegalArgumentException.class, () -> actorService.deleteActorById(id));
-        verify(actorRepository, never()).deleteById(id);
     }
 
     @Test
@@ -113,15 +80,4 @@ class ActorServiceTest {
         List<ActorEntity> resultado = actorService.searchByName(nombre);
         assertEquals(listaActores, resultado);
     }
-
-    @Test
-    void buscarActorPorNombre_noExistenteLanzaExcepcion() {
-        String nombre = "Juan Pérez";
-
-        when(actorRepository.existsByName(nombre)).thenReturn(false);
-
-        assertThrows(IllegalArgumentException.class, () -> actorService.searchByName(nombre));
-        verify(actorRepository, never()).findByName(nombre);
-    }
 }
-

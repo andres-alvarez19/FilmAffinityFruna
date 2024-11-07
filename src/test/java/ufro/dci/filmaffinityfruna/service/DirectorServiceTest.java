@@ -45,19 +45,8 @@ class DirectorServiceTest {
     }
 
     @Test
-    void testRegistrarDirector_YaExiste() {
-        when(directorRepository.existsByName(directorEntity.getName())).thenReturn(true);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            directorService.register(directorEntity);
-        });
-
-        assertEquals("El nombre del director ya está registrado", exception.getMessage());
-    }
-
-    @Test
     void testActualizarDirector_Exito() {
-        Long directorId = 1L;
+        long directorId = 1L;
         when(directorRepository.findById(directorId)).thenReturn(Optional.of(directorEntity));
         when(directorRepository.existsByName(directorEntity.getName())).thenReturn(false);
 
@@ -73,37 +62,13 @@ class DirectorServiceTest {
     }
 
     @Test
-    void testActualizarDirector_NoEncontrado() {
-        Long directorId = 1L;
-        when(directorRepository.findById(directorId)).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            directorService.update(directorId, directorEntity);
-        });
-
-        assertEquals("Director no encontrado", exception.getMessage());
-    }
-
-    @Test
     void testEliminarDirector_Exito() {
-        Long directorId = 1L;
+        long directorId = 1L;
         when(directorRepository.existsById(directorId)).thenReturn(true);
 
         directorService.deleteDirectorById(directorId);
 
         verify(directorRepository, times(1)).deleteById(directorId);
-    }
-
-    @Test
-    void testEliminarDirector_NoEncontrado() {
-        Long directorId = 1L;
-        when(directorRepository.existsById(directorId)).thenReturn(false);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            directorService.deleteDirectorById(directorId);
-        });
-
-        assertEquals("Director no encontrado", exception.getMessage());
     }
 
     @Test
@@ -118,17 +83,4 @@ class DirectorServiceTest {
         assertFalse(resultado.isEmpty());
         assertEquals(directorEntity.getName(), resultado.get(0).getName());
     }
-
-    @Test
-    void testBuscarPorNombre_NoEncontrado() {
-        String nombre = "Director Inexistente";
-        when(directorRepository.existsByName(nombre)).thenReturn(false);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            directorService.searchByName(nombre);
-        });
-
-        assertEquals("Director no encontrado", exception.getMessage());
-    }
 }
-

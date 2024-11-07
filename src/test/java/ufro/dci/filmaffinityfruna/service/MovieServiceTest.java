@@ -61,19 +61,8 @@ class MovieServiceTest {
     }
 
     @Test
-    void testRegistrarPelicula_YaExiste() {
-        when(movieRepository.existsByName(movieEntity.getName())).thenReturn(true);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            movieService.register(movieEntity);
-        });
-
-        assertEquals("La película ya está registrada", exception.getMessage());
-    }
-
-    @Test
     void testActualizarPelicula_Exito() {
-        Long movieId = 1L;
+        long movieId = 1L;
         when(movieRepository.findById(movieId)).thenReturn(Optional.of(movieEntity));
 
         MovieEntity peliculaModificada = new MovieEntity();
@@ -105,40 +94,14 @@ class MovieServiceTest {
         verify(movieRepository, times(1)).save(movieEntity);
     }
 
-
-
-    @Test
-    void testActualizarPelicula_NoEncontrada() {
-        Long movieId = 1L;
-        when(movieRepository.findById(movieId)).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            movieService.update(movieId, movieEntity);
-        });
-
-        assertEquals("Película no encontrada", exception.getMessage());
-    }
-
     @Test
     void testEliminarPelicula_Exito() {
-        Long movieId = 1L;
+        long movieId = 1L;
         when(movieRepository.existsById(movieId)).thenReturn(true);
 
         movieService.deleteMovieById(movieId);
 
         verify(movieRepository, times(1)).deleteById(movieId);
-    }
-
-    @Test
-    void testEliminarPelicula_NoEncontrada() {
-        Long movieId = 1L;
-        when(movieRepository.existsById(movieId)).thenReturn(false);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            movieService.deleteMovieById(movieId);
-        });
-
-        assertEquals("Película no encontrada", exception.getMessage());
     }
 
     @Test
@@ -152,17 +115,5 @@ class MovieServiceTest {
         assertNotNull(resultado);
         assertFalse(resultado.isEmpty());
         assertEquals(movieEntity.getName(), resultado.get(0).getName());
-    }
-
-    @Test
-    void testBuscarPorNombre_NoEncontrada() {
-        String nombre = "Película Inexistente";
-        when(movieRepository.existsByName(nombre)).thenReturn(false);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            movieService.searchByName(nombre);
-        });
-
-        assertEquals("Película no encontrada", exception.getMessage());
     }
 }

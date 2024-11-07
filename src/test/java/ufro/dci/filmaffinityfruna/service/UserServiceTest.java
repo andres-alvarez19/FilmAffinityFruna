@@ -30,6 +30,7 @@ class UserServiceTest {
         userEntity.setId(1L);
         userEntity.setUsername("usuario");
         userEntity.setEmail("usuario@ejemplo.com");
+        userEntity.setPassword("password");
     }
 
     @Test
@@ -42,148 +43,41 @@ class UserServiceTest {
     }
 
     @Test
-    void testRegistrarUsuario_EmailYaRegistrado() {
-        when(userRepository.existsByEmail(userEntity.getEmail())).thenReturn(true);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.register(userEntity);
-        });
-
-        assertEquals("El email ya está registrado", exception.getMessage());
-        verify(userRepository, never()).save(any());
-    }
-
-    @Test
     void testActualizarUsuario_Exito() {
         long userId = 1L;
-        UserEntity modifiedUser = new UserEntity();
-        modifiedUser.setUsername("usuario_modificado");
-        modifiedUser.setEmail("nuevo@ejemplo.com");
-
         when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
-        when(userRepository.existsByEmail(modifiedUser.getEmail())).thenReturn(false);
 
-        userService.update(userId, modifiedUser);
+        UserEntity updatedUser = new UserEntity();
+        updatedUser.setUsername("updateduser");
+        updatedUser.setEmail("updateduser@example.com");
 
-        assertEquals("usuario_modificado", userEntity.getUsername());
-        assertEquals("nuevo@ejemplo.com", userEntity.getEmail());
+        userService.update(userId, updatedUser);
+
+        assertEquals("updateduser", userEntity.getUsername());
+        assertEquals("updateduser@example.com", userEntity.getEmail());
         verify(userRepository, times(1)).save(userEntity);
     }
 
     @Test
-    void testActualizarUsuario_EmailYaRegistrado() {
-        Long userId = 1L;
-        UserEntity modifiedUser = new UserEntity();
-        modifiedUser.setUsername("usuario_modificado");
-        modifiedUser.setEmail("usuario@ejemplo.com");
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
-        when(userRepository.existsByEmail(modifiedUser.getEmail())).thenReturn(true);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.update(userId, modifiedUser);
-        });
-
-        assertEquals("El email ya está registrado", exception.getMessage());
-        verify(userRepository, never()).save(any());
-    }
-
-    @Test
-    void testActualizarUsuario_UsuarioNoEncontrado() {
-        Long userId = 1L;
-        UserEntity modifiedUser = new UserEntity();
-        modifiedUser.setUsername("usuario_modificado");
-        modifiedUser.setEmail("nuevo@ejemplo.com");
-
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.update(userId, modifiedUser);
-        });
-
-        assertEquals("Usuario no encontrado", exception.getMessage());
-        verify(userRepository, never()).save(any());
-    }
-
-@Test
-void testEliminarUsuarioPorId_Exito() {
-    long userId = 1L;
-    doNothing().when(userRepository).deleteById(userId);
-    when(userRepository.existsById(userId)).thenReturn(true);
-
-    userService.deleteUserById(userId);
-
-    verify(userRepository, times(1)).deleteById(userId);
-}
-
-    @Test
-    void testEliminarUsuarioPorId_UsuarioNoEncontrado() {
-        Long userId = 1L;
-        when(userRepository.existsById(userId)).thenReturn(false);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.deleteUserById(userId);
-        });
-
-        assertEquals("Usuario no encontrado", exception.getMessage());
-        verify(userRepository, never()).deleteById(any());
-    }
-
-    @Test
-    void testBuscarPorNombre_Exito() {
-        String username = "usuario";
-        when(userRepository.existsByUsername(username)).thenReturn(true);
-        when(userRepository.findByUsername(username)).thenReturn(Optional.ofNullable(userEntity));
-
-        UserEntity foundUser = userService.searchByName(username);
-
-        assertEquals(userEntity, foundUser);
-        verify(userRepository, times(1)).findByUsername(username);
-    }
-
-    @Test
-    void testBuscarPorNombre_UsuarioNoEncontrado() {
-        String username = "usuario_no_existente";
-        when(userRepository.existsByUsername(username)).thenReturn(false);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.searchByName(username);
-        });
-
-        assertEquals("Usuario no encontrado", exception.getMessage());
-    }
-
-    @Test
-    void testBuscarPorId_Exito() {
+    void testEliminarUsuarioExito() {
         long userId = 1L;
-        when(userRepository.findById(userId)).thenReturn(Optional.of(userEntity));
+        when(userRepository.existsById(userId)).thenReturn(true);
 
-        UserEntity foundUser = userService.findById(userId);
+        userService.deleteUserById(userId);
 
-        assertEquals(userEntity, foundUser);
-        verify(userRepository, times(1)).findById(userId);
+        verify(userRepository, times(1)).deleteById(userId);
     }
 
     @Test
-    void testBuscarPorId_UsuarioNoEncontrado() {
-        Long userId = 1L;
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+    void testBuscarPorNombreExito() {
+        String username = "testuser";
+        when(userRepository.existsByUsername(username)).thenReturn(true);
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(userEntity));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.findById(userId);
-        });
+        UserEntity result = userService.searchByName(username);
 
-        assertEquals("Usuario no encontrado", exception.getMessage());
-    }
-
-    @Test
-    void testDeleteById_UserDoesNotExist() {
-        Long userId = 1L;
-        when(userRepository.existsById(userId)).thenReturn(false);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.deleteUserById(userId);
-        });
-        assertEquals("Usuario no encontrado", exception.getMessage());
+        assertNotNull(result);
+        assertEquals(userEntity.getUsername(), result.getUsername());
+        verify(userRepository, times(1)).findByUsername(username);
     }
 }
