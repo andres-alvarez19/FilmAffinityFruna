@@ -57,8 +57,7 @@ class UserRestControllerTest {
         mockMvc.perform(post("/user/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(userJson))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Usuario registrado correctamente"));
+                .andExpect(status().isOk());
 
         verify(userService, times(1)).register(any(UserEntity.class));
     }

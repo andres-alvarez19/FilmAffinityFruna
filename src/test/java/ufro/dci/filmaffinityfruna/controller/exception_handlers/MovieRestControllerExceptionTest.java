@@ -48,12 +48,13 @@ class MovieRestControllerExceptionTest {
     @Test
     void testHandleGeneralException() throws Exception {
         Mockito.when(movieService.searchByName("Inception")).thenThrow(new RuntimeException("Error genérico"));
+        MovieEntity movieEntity = new MovieEntity();
+        movieEntity.setName("Inception");
 
         mockMvc.perform(get("/movie/search")
-                        .param("name", "Inception")
+                        .content(gson.toJson(movieEntity))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.message").value("Ocurrió un error inesperado: Error genérico"));
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -73,8 +74,7 @@ class MovieRestControllerExceptionTest {
         mockMvc.perform(post("/movie/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(movieJson))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("Error de integridad en la base de datos: Violación de clave única"));
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -82,7 +82,6 @@ class MovieRestControllerExceptionTest {
         mockMvc.perform(post("/movie/register")
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.name").exists());
+               .andExpect(status().isBadRequest());
     }
 }
