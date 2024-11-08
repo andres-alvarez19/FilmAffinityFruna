@@ -22,7 +22,7 @@ public class DirectorService {
         }
     }
 
-    public void update(Long id, DirectorEntity modifiedDirector) {
+    public void update(long id, DirectorEntity modifiedDirector) {
         Optional<DirectorEntity> optionalDirector = directorRepository.findById(id);
         if (directorRepository.existsByName(modifiedDirector.getName())) {
             throw new IllegalArgumentException("El nombre del director ya está registrado");
@@ -41,7 +41,7 @@ public class DirectorService {
         }
     }
 
-    public void deleteDirectorById(Long id) {
+    public void deleteDirectorById(long id) {
         if(!directorRepository.existsById(id)){
             throw new IllegalArgumentException("Director no encontrado");
         }else{

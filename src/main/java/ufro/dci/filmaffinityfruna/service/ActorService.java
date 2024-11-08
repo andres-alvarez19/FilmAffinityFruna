@@ -22,7 +22,7 @@ public class ActorService {
         }
     }
 
-    public void update(Long id, ActorEntity updatedActor) {
+    public void update(long id, ActorEntity updatedActor) {
         Optional<ActorEntity> existingActor = actorRepository.findById(id);
         if (existingActor.isPresent()) {
             ActorEntity actor = existingActor.get();
@@ -37,7 +37,7 @@ public class ActorService {
         }
     }
 
-    public void deleteActorById(Long id) {
+    public void deleteActorById(long id) {
         if (!actorRepository.existsById(id)) {
             throw new IllegalArgumentException("Actor no encontrado");
         } else {
