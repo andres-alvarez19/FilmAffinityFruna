@@ -1,5 +1,7 @@
 package ufro.dci.filmaffinityfruna.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ufro.dci.filmaffinityfruna.model.entity.ActorEntity;
 import ufro.dci.filmaffinityfruna.service.ActorService;
+import ufro.dci.filmaffinityfruna.utils.LocalDateAdapter;
+import ufro.dci.filmaffinityfruna.utils.LocalTimeAdapter;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -26,9 +32,15 @@ class ActorRestControllerTest {
     @MockBean
     private ActorService actorService;
 
+    private Gson gson;
+
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(new ActorRestController(actorService)).build();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+                .create();
     }
 
     @Test
@@ -48,30 +60,39 @@ class ActorRestControllerTest {
         verify(actorService, times(1)).searchByName(name);
     }
 
-@Test
-void testRegister() throws Exception {
-    doNothing().when(actorService).register(any(ActorEntity.class));
+    @Test
+    void testRegister() throws Exception {
+        ActorEntity actorEntity = new ActorEntity();
+        actorEntity.setName("Chris Hemsworth");
+        actorEntity.setNationality("Australian");
+        actorEntity.setDateOfBirth(LocalDate.of(1983, 8, 11));
 
-    mockMvc.perform(post("/actor/register")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"name\":\"Chris Hemsworth\", \"nationality\":\"Australian\", \"dateOfBirth\":\"1983-08-11\"}"))
-            .andExpect(status().isOk())
-            .andExpect(content().string("Actor registrado correctamente"));
+        doNothing().when(actorService).register(any(ActorEntity.class));
 
-    verify(actorService, times(1)).register(any(ActorEntity.class));
-}
+        String actorJson = gson.toJson(actorEntity);
+
+        mockMvc.perform(post("/actor/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(actorJson))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Actor registrado correctamente"));
+
+        verify(actorService, times(1)).register(any(ActorEntity.class));
+    }
 
     @Test
     void testUpdate() throws Exception {
-        Long id = 1L;
+        long id = 1L;
         ActorEntity updatedActor = new ActorEntity();
         updatedActor.setName("Chris Evans");
 
         doNothing().when(actorService).update(anyLong(), any(ActorEntity.class));
 
+        String actorJson = gson.toJson(updatedActor);
+
         mockMvc.perform(put("/actor/update/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Chris Evans\"}"))
+                .content(actorJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Actor actualizado correctamente"));
 
@@ -80,7 +101,7 @@ void testRegister() throws Exception {
 
     @Test
     void testDeleteActorById() throws Exception {
-        Long id = 1L;
+        long id = 1L;
 
         doNothing().when(actorService).deleteActorById(id);
 

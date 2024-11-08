@@ -1,5 +1,7 @@
 package ufro.dci.filmaffinityfruna.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ufro.dci.filmaffinityfruna.model.entity.DirectorEntity;
 import ufro.dci.filmaffinityfruna.service.DirectorService;
+import ufro.dci.filmaffinityfruna.utils.LocalDateAdapter;
+import ufro.dci.filmaffinityfruna.utils.LocalTimeAdapter;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -26,9 +32,15 @@ class DirectorRestControllerTest {
     @MockBean
     private DirectorService directorService;
 
+    private Gson gson;
+
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(new DirectorRestController(directorService)).build();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+                .create();
     }
 
     @Test
@@ -49,11 +61,18 @@ class DirectorRestControllerTest {
 
     @Test
     void testRegister() throws Exception {
+        DirectorEntity directorEntity = new DirectorEntity();
+        directorEntity.setName("Quentin Tarantino");
+        directorEntity.setDateOfBirth(LocalDate.of(1963, 3, 27));
+        directorEntity.setNationality("American");
+
         doNothing().when(directorService).register(any(DirectorEntity.class));
+
+        String directorJson = gson.toJson(directorEntity);
 
         mockMvc.perform(post("/director/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"Quentin Tarantino\", \"dateOfBirth\":\"1963-03-27\", \"nationality\":\"American\"}"))
+                        .content(directorJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Director registrado correctamente"));
 
@@ -62,13 +81,17 @@ class DirectorRestControllerTest {
 
     @Test
     void testUpdate() throws Exception {
-        Long id = 1L;
+        long id = 1L;
+        DirectorEntity updatedDirector = new DirectorEntity();
+        updatedDirector.setName("Steven Spielberg");
 
         doNothing().when(directorService).update(anyLong(), any(DirectorEntity.class));
 
+        String directorJson = gson.toJson(updatedDirector);
+
         mockMvc.perform(put("/director/update/{id}", id)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Steven Spielberg\"}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(directorJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Director actualizado correctamente"));
 
@@ -77,12 +100,12 @@ class DirectorRestControllerTest {
 
     @Test
     void testDeleteDirectorById() throws Exception {
-        Long id = 1L;
+        long id = 1L;
 
         doNothing().when(directorService).deleteDirectorById(id);
 
         mockMvc.perform(delete("/director/delete/{id}", id)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Director eliminado correctamente"));
 

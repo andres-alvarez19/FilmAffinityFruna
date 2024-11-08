@@ -1,5 +1,7 @@
 package ufro.dci.filmaffinityfruna.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
 import ufro.dci.filmaffinityfruna.service.GenreService;
+import ufro.dci.filmaffinityfruna.utils.LocalDateAdapter;
+import ufro.dci.filmaffinityfruna.utils.LocalTimeAdapter;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -24,9 +31,16 @@ class GenreRestControllerTest {
     @MockBean
     private GenreService genreService;
 
+    private Gson gson;
+
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(new GenreRestController(genreService)).build();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+                .create();
+
     }
 
     @Test
@@ -53,9 +67,11 @@ class GenreRestControllerTest {
 
         doNothing().when(genreService).register(any(GenreEntity.class));
 
+        String genreJson = gson.toJson(genreEntity);
+
         mockMvc.perform(post("/genre/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Drama\"}"))
+                .content(genreJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Género registrado correctamente"));
 
@@ -70,9 +86,11 @@ class GenreRestControllerTest {
 
         doNothing().when(genreService).update(anyString(), any(GenreEntity.class));
 
+        String genreJson = gson.toJson(updatedGenre);
+
         mockMvc.perform(put("/genre/update/{name}", name)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"name\":\"Comedy\"}"))
+                .content(genreJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Género actualizado correctamente"));
 

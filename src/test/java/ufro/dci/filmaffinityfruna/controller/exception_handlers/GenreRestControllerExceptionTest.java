@@ -1,5 +1,8 @@
 package ufro.dci.filmaffinityfruna.controller.exception_handlers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import ufro.dci.filmaffinityfruna.controller.GenreRestController;
 import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
 import ufro.dci.filmaffinityfruna.service.GenreService;
+import ufro.dci.filmaffinityfruna.utils.LocalDateAdapter;
+import ufro.dci.filmaffinityfruna.utils.LocalTimeAdapter;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -24,6 +32,16 @@ class GenreRestControllerExceptionTest {
 
     @MockBean
     private GenreService genreService;
+
+    private Gson gson;
+
+    @BeforeEach
+    void setUp() {
+        gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+                .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
+                .create();
+    }
 
     @Test
     void testHandleGeneralException() throws Exception {
@@ -41,9 +59,14 @@ class GenreRestControllerExceptionTest {
         doThrow(new DataIntegrityViolationException("Violación de clave única"))
                 .when(genreService).register(Mockito.any(GenreEntity.class));
 
+        GenreEntity genreEntity = new GenreEntity();
+        genreEntity.setName("Drama");
+
+        String genreJson = gson.toJson(genreEntity);
+
         mockMvc.perform(post("/genre/register")
-                        .content("{\"name\": \"Drama\"}")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(genreJson))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("Error de integridad en la base de datos: Violación de clave única"));
     }
@@ -51,10 +74,9 @@ class GenreRestControllerExceptionTest {
     @Test
     void testHandleValidationException() throws Exception {
         mockMvc.perform(post("/genre/register")
-                .content("{}")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content("{}")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.name").exists());
     }
-
 }

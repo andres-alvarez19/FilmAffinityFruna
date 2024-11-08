@@ -86,7 +86,7 @@ class MovieRestControllerTest {
 
     @Test
     void testUpdate() throws Exception {
-        Long id = 1L;
+        long id = 1L;
         MovieEntity updatedMovie = new MovieEntity();
         updatedMovie.setName("The Dark Knight");
         updatedMovie.setDirector(new DirectorEntity());
@@ -109,7 +109,7 @@ class MovieRestControllerTest {
 
     @Test
     void testDeleteMovieById() throws Exception {
-        Long id = 1L;
+        long id = 1L;
 
         doNothing().when(movieService).deleteMovieById(id);
 
