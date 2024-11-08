@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import ufro.dci.filmaffinityfruna.utils.ResponseUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +30,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Map<String, String>> handleDatabaseExceptions(DataIntegrityViolationException ex) {
-        return ResponseUtil.createResponse(HttpStatus.CONFLICT, "Error de integridad en la base de datos: " + ex.getMessage());
+    public ResponseEntity<String> handleDatabaseExceptions(DataIntegrityViolationException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
 }
