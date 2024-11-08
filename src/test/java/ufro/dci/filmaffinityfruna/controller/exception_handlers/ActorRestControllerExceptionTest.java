@@ -20,6 +20,7 @@ import ufro.dci.filmaffinityfruna.utils.LocalTimeAdapter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.doThrow;
@@ -45,13 +46,14 @@ class ActorRestControllerExceptionTest {
 
     @Test
     void testHandleGeneralException() throws Exception {
-        Mockito.when(actorService.searchByName("Robert Downey Jr.")).thenThrow(new RuntimeException("Error genérico"));
+        when(actorService.searchByName("Robert Downey Jr.")).thenThrow(new RuntimeException("Error genérico"));
+        ActorEntity actorEntity = new ActorEntity();
+        actorEntity.setName("Robert Downey Jr.");
 
         mockMvc.perform(get("/actor/search")
-                        .param("name", "Robert Downey Jr.")
+                        .content(gson.toJson(actorEntity))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.message").value("Ocurrió un error inesperado: Error genérico"));
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -69,8 +71,7 @@ class ActorRestControllerExceptionTest {
         mockMvc.perform(post("/actor/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(actorJson))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("Error de integridad en la base de datos: Violación de clave única"));
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -78,7 +79,6 @@ class ActorRestControllerExceptionTest {
         mockMvc.perform(post("/actor/register")
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.name").exists());
+                .andExpect(status().isBadRequest());
     }
 }

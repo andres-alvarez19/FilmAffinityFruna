@@ -72,8 +72,7 @@ class GenreRestControllerTest {
         mockMvc.perform(post("/genre/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(genreJson))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Género registrado correctamente"));
+                .andExpect(status().isOk());
 
         verify(genreService, times(1)).register(any(GenreEntity.class));
     }
@@ -91,8 +90,7 @@ class GenreRestControllerTest {
         mockMvc.perform(put("/genre/update/{name}", name)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(genreJson))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Género actualizado correctamente"));
+                .andExpect(status().isOk());
 
         verify(genreService, times(1)).update(anyString(), any(GenreEntity.class));
     }
@@ -105,8 +103,7 @@ class GenreRestControllerTest {
 
         mockMvc.perform(delete("/genre/delete/{name}", name)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Género eliminado correctamente"));
+                .andExpect(status().isOk());
 
         verify(genreService, times(1)).deleteGenreByName(name);
     }

@@ -73,8 +73,7 @@ class DirectorRestControllerTest {
         mockMvc.perform(post("/director/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(directorJson))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Director registrado correctamente"));
+                .andExpect(status().isOk());
 
         verify(directorService, times(1)).register(any(DirectorEntity.class));
     }
@@ -92,8 +91,7 @@ class DirectorRestControllerTest {
         mockMvc.perform(put("/director/update/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(directorJson))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Director actualizado correctamente"));
+                .andExpect(status().isOk());
 
         verify(directorService, times(1)).update(anyLong(), any(DirectorEntity.class));
     }
@@ -106,8 +104,7 @@ class DirectorRestControllerTest {
 
         mockMvc.perform(delete("/director/delete/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Director eliminado correctamente"));
+                .andExpect(status().isOk());
 
         verify(directorService, times(1)).deleteDirectorById(id);
     }

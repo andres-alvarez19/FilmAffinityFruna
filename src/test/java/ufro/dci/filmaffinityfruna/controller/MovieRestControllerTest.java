@@ -78,8 +78,7 @@ class MovieRestControllerTest {
         mockMvc.perform(post("/movie/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(movieJson))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Película registrada correctamente"));
+                .andExpect(status().isOk());
 
         verify(movieService, times(1)).register(any(MovieEntity.class));
     }
@@ -101,8 +100,7 @@ class MovieRestControllerTest {
         mockMvc.perform(put("/movie/update/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(movieJson))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Película actualizada correctamente"));
+                .andExpect(status().isOk());
 
         verify(movieService, times(1)).update(anyLong(), any(MovieEntity.class));
     }

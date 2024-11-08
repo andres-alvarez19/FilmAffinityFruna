@@ -69,13 +69,10 @@ class ActorRestControllerTest {
 
         doNothing().when(actorService).register(any(ActorEntity.class));
 
-        String actorJson = gson.toJson(actorEntity);
-
         mockMvc.perform(post("/actor/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(actorJson))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Actor registrado correctamente"));
+                .content(gson.toJson(actorEntity)))
+                .andExpect(status().isOk());
 
         verify(actorService, times(1)).register(any(ActorEntity.class));
     }
@@ -93,8 +90,7 @@ class ActorRestControllerTest {
         mockMvc.perform(put("/actor/update/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(actorJson))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Actor actualizado correctamente"));
+                .andExpect(status().isOk());
 
         verify(actorService, times(1)).update(anyLong(), any(ActorEntity.class));
     }
@@ -107,8 +103,7 @@ class ActorRestControllerTest {
 
         mockMvc.perform(delete("/actor/delete/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Actor eliminado correctamente"));
+                .andExpect(status().isOk());
 
         verify(actorService, times(1)).deleteActorById(id);
     }

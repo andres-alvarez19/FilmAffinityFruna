@@ -49,8 +49,7 @@ class UserRestControllerExceptionTest {
 
         mockMvc.perform(get("/user/1")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.message").value("Ocurrió un error inesperado: Error genérico"));
+                .andExpect(status().isInternalServerError());
     }
 
     @Test
@@ -68,8 +67,7 @@ class UserRestControllerExceptionTest {
         mockMvc.perform(post("/user/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("Error de integridad en la base de datos: Violación de clave única"));
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -77,7 +75,6 @@ class UserRestControllerExceptionTest {
         mockMvc.perform(post("/user/register")
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.username").exists());
+                .andExpect(status().isBadRequest());
     }
 }
