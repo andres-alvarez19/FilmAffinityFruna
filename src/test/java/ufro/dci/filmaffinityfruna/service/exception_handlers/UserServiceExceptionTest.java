@@ -73,6 +73,6 @@ class UserServiceExceptionTest {
         assertThrows(IllegalArgumentException.class, () -> {
             userService.searchByName(username);
         });
-        verify(userRepository, never()).findByUsername(username);
+        verify(userRepository, never()).existsByUsername(username);
     }
 }
