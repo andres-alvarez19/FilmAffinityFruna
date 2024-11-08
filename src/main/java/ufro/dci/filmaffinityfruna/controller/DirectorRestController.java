@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ufro.dci.filmaffinityfruna.model.entity.DirectorEntity;
 import ufro.dci.filmaffinityfruna.service.DirectorService;
+import ufro.dci.filmaffinityfruna.utils.MessageConstant;
 
 import java.util.List;
 
@@ -20,19 +21,19 @@ public class DirectorRestController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid DirectorEntity directorEntity) {
         directorService.register(directorEntity);
-        return new ResponseEntity<>("Director registrado correctamente", HttpStatus.OK);
+        return new ResponseEntity<>(MessageConstant.REGISTERED, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> update(@PathVariable(name = "id") Long id, @RequestBody DirectorEntity updatedDirector) {
         directorService.update(id, updatedDirector);
-        return new ResponseEntity<>("Director actualizado correctamente", HttpStatus.OK);
+        return new ResponseEntity<>(MessageConstant.UPDATED, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteDirectorById(@PathVariable(name = "id") Long id) {
         directorService.deleteDirectorById(id);
-        return new ResponseEntity<>("Director eliminado correctamente", HttpStatus.OK);
+        return new ResponseEntity<>(MessageConstant.DELETED, HttpStatus.OK);
     }
 
     @GetMapping("/search/{name}")
