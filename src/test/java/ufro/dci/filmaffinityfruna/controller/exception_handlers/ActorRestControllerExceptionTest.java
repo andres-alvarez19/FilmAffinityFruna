@@ -1,4 +1,4 @@
-package ufro.dci.filmaffinityfruna.controller.exceptionHandlers;
+package ufro.dci.filmaffinityfruna.controller.exception_handlers;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -8,29 +8,29 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ufro.dci.filmaffinityfruna.controller.GenreRestController;
-import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
-import ufro.dci.filmaffinityfruna.service.GenreService;
+import ufro.dci.filmaffinityfruna.controller.ActorRestController;
+import ufro.dci.filmaffinityfruna.model.entity.ActorEntity;
+import ufro.dci.filmaffinityfruna.service.ActorService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.doThrow;
 
-@WebMvcTest(GenreRestController.class)
-class GenreRestControllerExceptionTest {
+@WebMvcTest(ActorRestController.class)
+class ActorRestControllerExceptionTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private GenreService genreService;
+    private ActorService actorService;
 
     @Test
     void testHandleGeneralException() throws Exception {
-        Mockito.when(genreService.searchByName("Action")).thenThrow(new RuntimeException("Error genérico"));
+        Mockito.when(actorService.searchByName("Leonardo")).thenThrow(new RuntimeException("Error genérico"));
 
-        mockMvc.perform(get("/genre/search")
-                        .param("name", "Action")
+        mockMvc.perform(get("/actor/search")
+                        .param("name", "Leonardo")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message").value("Ocurrió un error inesperado: Error genérico"));
@@ -39,10 +39,10 @@ class GenreRestControllerExceptionTest {
     @Test
     void testHandleDatabaseException() throws Exception {
         doThrow(new DataIntegrityViolationException("Violación de clave única"))
-                .when(genreService).register(Mockito.any(GenreEntity.class));
+                .when(actorService).register(Mockito.any(ActorEntity.class));
 
-        mockMvc.perform(post("/genre/register")
-                        .content("{\"name\": \"Drama\"}")
+        mockMvc.perform(post("/actor/register")
+                        .content("{\"name\": \"Leonardo DiCaprio\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("Error de integridad en la base de datos: Violación de clave única"));
@@ -50,11 +50,10 @@ class GenreRestControllerExceptionTest {
 
     @Test
     void testHandleValidationException() throws Exception {
-        mockMvc.perform(post("/genre/register")
-                .content("{}")
-                .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/actor/register")
+                        .content("{}")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.name").exists());
     }
-
 }

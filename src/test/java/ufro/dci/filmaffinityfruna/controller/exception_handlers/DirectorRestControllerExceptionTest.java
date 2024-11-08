@@ -1,4 +1,4 @@
-package ufro.dci.filmaffinityfruna.controller.exceptionHandlers;
+package ufro.dci.filmaffinityfruna.controller.exception_handlers;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -8,28 +8,28 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ufro.dci.filmaffinityfruna.controller.UserRestController;
-import ufro.dci.filmaffinityfruna.model.entity.UserEntity;
-import ufro.dci.filmaffinityfruna.service.UserService;
+import ufro.dci.filmaffinityfruna.controller.DirectorRestController;
+import ufro.dci.filmaffinityfruna.model.entity.DirectorEntity;
+import ufro.dci.filmaffinityfruna.service.DirectorService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.Mockito.doThrow;
 
-@WebMvcTest(UserRestController.class)
-class UserRestControllerExceptionTest {
+@WebMvcTest(DirectorRestController.class)
+class DirectorRestControllerExceptionTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private UserService userService;
+    private DirectorService directorService;
 
     @Test
     void testHandleGeneralException() throws Exception {
-        Mockito.when(userService.findById(1)).thenThrow(new RuntimeException("Error genérico"));
+        Mockito.when(directorService.searchByName("Nolan")).thenThrow(new RuntimeException("Error genérico"));
 
-        mockMvc.perform(get("/user/1")
+        mockMvc.perform(get("/director/search/Nolan")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message").value("Ocurrió un error inesperado: Error genérico"));
@@ -38,10 +38,10 @@ class UserRestControllerExceptionTest {
     @Test
     void testHandleDatabaseException() throws Exception {
         doThrow(new DataIntegrityViolationException("Violación de clave única"))
-                .when(userService).register(Mockito.any(UserEntity.class));
+                .when(directorService).register(Mockito.any(DirectorEntity.class));
 
-        mockMvc.perform(post("/user/register")
-                        .content("{\"username\": \"johndoe\", \"password\": \"password123\"}")
+        mockMvc.perform(post("/director/register")
+                        .content("{\"name\": \"Christopher Nolan\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("Error de integridad en la base de datos: Violación de clave única"));
@@ -49,10 +49,10 @@ class UserRestControllerExceptionTest {
 
     @Test
     void testHandleValidationException() throws Exception {
-        mockMvc.perform(post("/user/register")
+        mockMvc.perform(post("/director/register")
                         .content("{}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.username").exists());
+                .andExpect(jsonPath("$.name").exists());
     }
 }
