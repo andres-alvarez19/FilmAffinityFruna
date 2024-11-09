@@ -16,7 +16,9 @@ public class ValidationService {
     private final MovieRepository movieRepository;
     private final UserRepository userRepository;
 
-    public ValidationService(ActorRepository actorRepository, DirectorRepository directorRepository, GenreRepository genreRepository, MovieRepository movieRepository, UserRepository userRepository) {
+    public ValidationService(ActorRepository actorRepository, DirectorRepository directorRepository, 
+                             GenreRepository genreRepository, MovieRepository movieRepository, 
+                             UserRepository userRepository) {
         this.actorRepository = actorRepository;
         this.directorRepository = directorRepository;
         this.genreRepository = genreRepository;
