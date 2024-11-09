@@ -1,69 +1,41 @@
 package ufro.dci.filmaffinityfruna.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ufro.dci.filmaffinityfruna.model.entity.UserEntity;
 import ufro.dci.filmaffinityfruna.repository.UserRepository;
 
-import java.util.Optional;
-
-@RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserService extends BaseService<UserEntity, Long> {
 
     private final UserRepository userRepository;
-    private final ValidationService validationService; // Inyectamos el ValidationService
 
+    public UserService(UserRepository userRepository) {
+        super(userRepository);
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public boolean existsByUniqueProperty(UserEntity userEntity) {
+        return userRepository.existsByEmail(userEntity.getEmail());
+    }
+
+    @Override
     public void register(UserEntity userEntity) {
-        // Delegamos la validación al ValidationService
-        if (validationService.existsUserByEmail(userEntity.getEmail())) {
+        if (existsByUniqueProperty(userEntity)) {
             throw new IllegalArgumentException("El email ya está registrado");
-        } else {
-            userRepository.save(userEntity);
         }
+        super.register(userEntity);
     }
 
-    public void update(Long id, UserEntity modifiedUser) {
-        // Validamos si el email ya está registrado antes de actualizar
-        if (validationService.existsUserByEmail(modifiedUser.getEmail())) {
-            throw new IllegalArgumentException("El email ya está registrado");
-        } else {
-            Optional<UserEntity> optionalUser = userRepository.findById(id);
-            if (optionalUser.isPresent()) {
-                UserEntity user = optionalUser.get();
-                user.setUsername(modifiedUser.getUsername());
-                user.setEmail(modifiedUser.getEmail());
-                userRepository.save(user);
-            } else {
-                throw new IllegalArgumentException("Usuario no encontrado");
-            }
-        }
+    public UserEntity searchByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
     }
 
-    public void deleteUserById(Long id) {
-        // Validamos si el usuario existe antes de eliminarlo
-        if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("Usuario no encontrado");
-        } else {
-            userRepository.deleteById(id);
-        }
-    }
-
-    public UserEntity searchByName(String name) {
-        // Validamos si el usuario existe por nombre
-        if (!validationService.existsUserByUsername(name)) {
-            throw new IllegalArgumentException("Usuario no encontrado");
-        } else {
-            return userRepository.findByUsername(name);
-        }
-    }
-
-    public UserEntity findById(Long id) {
-        Optional<UserEntity> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        } else {
+    public void deleteByUsername(String username) {
+        if (!userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("Usuario no encontrado");
         }
+        userRepository.deleteByUsername(username);
     }
 }
