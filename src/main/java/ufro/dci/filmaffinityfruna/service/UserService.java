@@ -1,65 +1,53 @@
 package ufro.dci.filmaffinityfruna.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ufro.dci.filmaffinityfruna.model.entity.UserEntity;
 import ufro.dci.filmaffinityfruna.repository.UserRepository;
 
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
-public class UserService {
+public class UserService extends BaseService<UserEntity, Long> {
 
     private final UserRepository userRepository;
 
+    public UserService(UserRepository userRepository) {
+        super(userRepository);
+        this.userRepository = userRepository;
+    }
+
+    @Override
     public void register(UserEntity userEntity) {
         if (userRepository.existsByEmail(userEntity.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
-        } else {
-            userRepository.save(userEntity);
         }
+        super.register(userEntity);
     }
 
-    public void update(long id, UserEntity modifiedUser) {
-        Optional<UserEntity> optionalUser = userRepository.findById(id);
+    @Override
+    public void update(Long id, UserEntity modifiedUser) {
         if (userRepository.existsByEmail(modifiedUser.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
-        }else{
-            if (optionalUser.isPresent()) {
-                UserEntity user = optionalUser.get();
-                user.setUsername(modifiedUser.getUsername());
-                user.setEmail(modifiedUser.getEmail());
-                userRepository.save(user);
-            } else {
-                throw new IllegalArgumentException("Usuario no encontrado");
-            }
         }
+        super.update(id, modifiedUser);
     }
 
-    public void deleteUserById(long id) {
-        if(!userRepository.existsById(id)){
+    @Override
+    public void deleteById(Long id) {
+        if (!userRepository.existsById(id)) {
             throw new IllegalArgumentException("Usuario no encontrado");
-        }else{
-            userRepository.deleteById(id);
         }
+        super.deleteById(id);
     }
 
     public UserEntity searchByName(String name) {
-        Optional<UserEntity> optionalUser = userRepository.findByUsername(name);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        } else {
+        if (!userRepository.existsByUsername(name)) {
             throw new IllegalArgumentException("Usuario no encontrado");
         }
+        return userRepository.findByUsername(name);
     }
 
-    public UserEntity findById(long id) {
-        Optional<UserEntity> optionalUser = userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get();
-        } else {
-            throw new IllegalArgumentException("Usuario no encontrado");
-        }
+    public UserEntity findById(Long id) {
+        return super.findById(id).orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
     }
 }
