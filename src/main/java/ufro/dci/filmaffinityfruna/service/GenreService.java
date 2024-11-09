@@ -1,24 +1,28 @@
 package ufro.dci.filmaffinityfruna.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
 import ufro.dci.filmaffinityfruna.repository.GenreRepository;
 
-@RequiredArgsConstructor
 @Service
-public class GenreService {
+public class GenreService extends BaseService<GenreEntity, String> {
 
     private final GenreRepository genreRepository;
 
+    public GenreService(GenreRepository genreRepository) {
+        super(genreRepository);
+        this.genreRepository = genreRepository;
+    }
+
+    @Override
     public void register(GenreEntity genreEntity) {
         if (genreRepository.existsByName(genreEntity.getName())) {
             throw new IllegalArgumentException("El género ya está registrado");
-        } else {
-            genreRepository.save(genreEntity);
         }
+        super.register(genreEntity);
     }
 
+    @Override
     public void update(String name, GenreEntity updatedGenre) {
         if (genreRepository.existsByName(name)) {
             GenreEntity genre = genreRepository.findByName(name);
@@ -29,20 +33,18 @@ public class GenreService {
         }
     }
 
-    public void deleteGenreByName(String name) {
-        if (!genreRepository.existsByName(name)) {
-            throw new IllegalArgumentException("Género no encontrado");
-        } else {
-            genreRepository.deleteByName(name);
-        }
-    }
-
     public GenreEntity searchByName(String name) {
         if (!genreRepository.existsByName(name)) {
             throw new IllegalArgumentException("Género no encontrado");
-        } else {
-            return genreRepository.findByName(name);
         }
+        return genreRepository.findByName(name);
     }
 
+    @Override
+    public void deleteById(String name) {
+        if (!genreRepository.existsByName(name)) {
+            throw new IllegalArgumentException("Género no encontrado");
+        }
+        super.deleteById(name);
+    }
 }
