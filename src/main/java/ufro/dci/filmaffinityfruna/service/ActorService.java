@@ -1,57 +1,39 @@
 package ufro.dci.filmaffinityfruna.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ufro.dci.filmaffinityfruna.model.entity.ActorEntity;
 import ufro.dci.filmaffinityfruna.repository.ActorRepository;
 
 import java.util.List;
-import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
-public class ActorService {
+public class ActorService extends BaseService<ActorEntity, Long> {
 
     private final ActorRepository actorRepository;
-    private final ValidationService validationService; // Inyectamos el ValidationService
 
+    public ActorService(ActorRepository actorRepository) {
+        super(actorRepository);
+        this.actorRepository = actorRepository;
+    }
+
+    @Override
+    public boolean existsByUniqueProperty(ActorEntity actorEntity) {
+        return actorRepository.existsByNameAndDateOfBirth(actorEntity.getName(), actorEntity.getDateOfBirth());
+    }
+
+    @Override
     public void register(ActorEntity actorEntity) {
-        // Delegamos la validación al ValidationService
-        if (validationService.existsActor(actorEntity.getName(), actorEntity.getDateOfBirth())) {
+        if (existsByUniqueProperty(actorEntity)) {
             throw new IllegalArgumentException("El actor ya está registrado");
-        } else {
-            actorRepository.save(actorEntity);
         }
-    }
-
-    public void update(Long id, ActorEntity updatedActor) {
-        Optional<ActorEntity> existingActor = actorRepository.findById(id);
-        if (existingActor.isPresent()) {
-            ActorEntity actor = existingActor.get();
-            actor.setName(updatedActor.getName());
-            actor.setNationality(updatedActor.getNationality());
-            actor.setDateOfBirth(updatedActor.getDateOfBirth());
-            actor.setWikipediaLink(updatedActor.getWikipediaLink());
-            actor.setDateOfDeath(updatedActor.getDateOfDeath());
-            actorRepository.save(actor);
-        } else {
-            throw new IllegalArgumentException("Actor no encontrado");
-        }
-    }
-
-    public void deleteActorById(Long id) {
-        if (!actorRepository.existsById(id)) {
-            throw new IllegalArgumentException("Actor no encontrado");
-        } else {
-            actorRepository.deleteById(id);
-        }
+        super.register(actorEntity);
     }
 
     public List<ActorEntity> searchByName(String name) {
-        if (!actorRepository.existsByName(name)) {
+        List<ActorEntity> actors = actorRepository.findByName(name);
+        if (actors.isEmpty()) {
             throw new IllegalArgumentException("Actor no encontrado");
-        } else {
-            return actorRepository.findByName(name);
         }
+        return actors;
     }
 }
