@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ufro.dci.filmaffinityfruna.model.entity.ActorEntity;
 import ufro.dci.filmaffinityfruna.service.ActorService;
+import ufro.dci.filmaffinityfruna.utils.MessageConstant;
 
 import java.util.List;
 
@@ -26,18 +27,18 @@ public class ActorRestController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid ActorEntity actorEntity) {
         actorService.register(actorEntity);
-        return new ResponseEntity<>("Actor registrado correctamente", HttpStatus.OK);
+        return new ResponseEntity<>(MessageConstant.REGISTERED, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> update(@PathVariable(name = "id") Long id, @RequestBody ActorEntity updatedActor) {
         actorService.update(id, updatedActor);
-        return new ResponseEntity<>("Actor actualizado correctamente", HttpStatus.OK);
+        return new ResponseEntity<>(MessageConstant.UPDATED, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteActorById(@PathVariable(name = "id") Long id) {
         actorService.deleteActorById(id);
-        return new ResponseEntity<>("Actor eliminado correctamente", HttpStatus.OK);
+        return new ResponseEntity<>(MessageConstant.DELETED, HttpStatus.OK);
     }
 }

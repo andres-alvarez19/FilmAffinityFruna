@@ -7,9 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ufro.dci.filmaffinityfruna.model.entity.UserEntity;
 import ufro.dci.filmaffinityfruna.service.UserService;
-import ufro.dci.filmaffinityfruna.utils.ResponseUtil;
+import ufro.dci.filmaffinityfruna.utils.MessageConstant;
 
-import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,9 +18,9 @@ public class UserRestController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> register(@RequestBody @Valid UserEntity userEntity) {
+    public ResponseEntity<String> register(@RequestBody @Valid UserEntity userEntity) {
         userService.register(userEntity);
-        return ResponseUtil.createResponse(HttpStatus.OK, "Usuario registrado correctamente");
+        return new ResponseEntity<>(MessageConstant.REGISTERED, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
