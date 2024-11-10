@@ -14,23 +14,29 @@ public abstract class BaseService<T, ID> {
 
     // Método genérico de registro
     public void register(T entity) {
+        if (entity == null) {
+            throw new IllegalArgumentException("Entidad no puede ser nula");
+        }
         repository.save(entity);
     }
 
     // Método genérico de actualización
     public void update(ID id, T updatedEntity) {
+        if (updatedEntity == null) {
+            throw new IllegalArgumentException("Entidad no puede ser nula");
+        }
         Optional<T> existingEntity = repository.findById(id);
         if (existingEntity.isPresent()) {
             repository.save(updatedEntity);
         } else {
-            throw new IllegalArgumentException("Entidad no encontrada");
+            throw new EntityNotFoundException("Entidad no encontrada con id: " + id);
         }
     }
 
     // Método genérico de eliminación por ID
     public void deleteById(ID id) {
         if (!repository.existsById(id)) {
-            throw new IllegalArgumentException("Entidad no encontrada");
+            throw new EntityNotFoundException("Entidad no encontrada con id: " + id);
         }
         repository.deleteById(id);
     }
