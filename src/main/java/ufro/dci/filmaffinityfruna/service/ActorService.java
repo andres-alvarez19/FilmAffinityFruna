@@ -1,82 +1,39 @@
 package ufro.dci.filmaffinityfruna.service;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.*;
-
+import org.springframework.stereotype.Service;
 import ufro.dci.filmaffinityfruna.model.entity.ActorEntity;
 import ufro.dci.filmaffinityfruna.repository.ActorRepository;
 
-import java.util.Optional;
+import java.util.List;
 
-public class ActorServiceTest {
+@Service
+public class ActorService extends BaseService<ActorEntity, Long> {
 
-    @Mock
-    private ActorRepository actorRepository;
+    private final ActorRepository actorRepository;
 
-    private ActorService actorService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        actorService = new ActorService(actorRepository);
+    public ActorService(ActorRepository actorRepository) {
+        super(actorRepository);
+        this.actorRepository = actorRepository;
     }
 
-    @Test
-    void testRegisterActor() {
-        ActorEntity actorEntity = new ActorEntity();
-        actorEntity.setName("Test Actor");
-        actorEntity.setDateOfBirth("1980-01-01");
-
-        // Simula que no existe el actor
-        when(actorRepository.existsByNameAndDateOfBirth(anyString(), anyString())).thenReturn(false);
-
-        actorService.register(actorEntity);
-
-        // Verifica que el actor se ha guardado
-        verify(actorRepository, times(1)).save(actorEntity);
+    @Override
+    public boolean existsByUniqueProperty(ActorEntity actorEntity) {
+        return actorRepository.existsByNameAndDateOfBirth(actorEntity.getName(), actorEntity.getDateOfBirth());
     }
 
-    @Test
-    void testRegisterActorAlreadyExists() {
-        ActorEntity actorEntity = new ActorEntity();
-        actorEntity.setName("Test Actor");
-        actorEntity.setDateOfBirth("1980-01-01");
-
-        // Simula que el actor ya existe
-        when(actorRepository.existsByNameAndDateOfBirth(anyString(), anyString())).thenReturn(true);
-
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            actorService.register(actorEntity);
-        });
-
-        assertEquals("El actor ya está registrado", thrown.getMessage());
+    @Override
+    public void register(ActorEntity actorEntity) {
+        if (existsByUniqueProperty(actorEntity)) {
+            throw new IllegalArgumentException("El actor ya está registrado");
+        }
+        super.register(actorEntity);
     }
 
-    @Test
-    void testSearchByName() {
-        ActorEntity actorEntity = new ActorEntity();
-        actorEntity.setName("Test Actor");
-
-        when(actorRepository.findByName("Test Actor")).thenReturn(List.of(actorEntity));
-
-        List<ActorEntity> result = actorService.searchByName("Test Actor");
-
-        assertFalse(result.isEmpty());
-        assertEquals("Test Actor", result.get(0).getName());
-    }
-
-    @Test
-    void testSearchByNameNotFound() {
-        when(actorRepository.findByName("Nonexistent Actor")).thenReturn(List.of());
-
-        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
-            actorService.searchByName("Nonexistent Actor");
-        });
-
-        assertEquals("Actor no encontrado", thrown.getMessage());
+    public List<ActorEntity> searchByName(String name) {
+        List<ActorEntity> actors = actorRepository.findByName(name);
+        if (actors.isEmpty()) {
+            throw new IllegalArgumentException("Actor no encontrado");
+        }
+        return actors;
     }
 }
