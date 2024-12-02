@@ -1,11 +1,13 @@
 package ufro.dci.filmaffinityfruna.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ufro.dci.filmaffinityfruna.model.entity.MovieEntity;
 import ufro.dci.filmaffinityfruna.service.MovieService;
+import ufro.dci.filmaffinityfruna.utils.MessageConstant;
 
 import java.util.List;
 
@@ -18,42 +20,26 @@ public class MovieRestController {
 
     @GetMapping("/search")
     public ResponseEntity<List<MovieEntity>> searchMoviesByName(@RequestParam(name = "name") String name) {
-        try {
-            List<MovieEntity> movies = movieService.searchByName(name);
-            return new ResponseEntity<>(movies, HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<MovieEntity> movies = movieService.searchByName(name);
+        return new ResponseEntity<>(movies, HttpStatus.OK);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody MovieEntity movieEntity) {
-        try {
-            movieService.register(movieEntity);
-            return new ResponseEntity<>("Película registrada correctamente", HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity<>("Ocurrió un error " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<String> register(@RequestBody @Valid MovieEntity movieEntity) {
+        movieService.register(movieEntity);
+        return new ResponseEntity<>(MessageConstant.REGISTERED, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> update(@PathVariable(name = "id") Long id, @RequestBody MovieEntity updatedMovie) {
-        try {
-            movieService.update(id, updatedMovie);
-            return new ResponseEntity<>("Película actualizada correctamente", HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity<>("Ocurrió un error " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        movieService.update(id, updatedMovie);
+        return new ResponseEntity<>(MessageConstant.UPDATED, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteMovieById(@PathVariable(name = "id") Long id) {
-        try {
-            movieService.deleteMovieById(id);
-            return new ResponseEntity<>("Película eliminada correctamente", HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity<>("Ocurrió un error " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        movieService.deleteMovieById(id);
+        return new ResponseEntity<>(MessageConstant.DELETED, HttpStatus.OK);
     }
 
 

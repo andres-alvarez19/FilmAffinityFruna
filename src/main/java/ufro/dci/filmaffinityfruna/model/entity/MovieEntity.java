@@ -1,12 +1,13 @@
 package ufro.dci.filmaffinityfruna.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,25 +21,30 @@ public class MovieEntity {
     @Id
     @Column(name="id_pelicula")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @NotNull(message = "ID no puede ser nulo")
+    private long id;
 
     @Column(name="nombre", nullable = false)
+    @NotNull(message = "Nombre no puede ser nulo")
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "director_id_director", nullable = false)
+    @NotNull(message = "Director no puede ser nulo")
+    private DirectorEntity director;
 
     @Column(name="sinopsis", nullable = true)
     private String synopsis;
 
-    @ManyToOne
-    @JoinColumn(name = "director_id_director", nullable = false)
-    private DirectorEntity director;
-
-    @Column(name="pais" )
+    @Column(name="pais")
     private String country;
 
     @Column(name="duracion", nullable = false)
-    private Time duration;
+    @NotNull(message = "Duración no puede ser nula")
+    private LocalTime duration;
 
     @Column(name="estreno", nullable = false)
+    @NotNull(message = "Año de estreno no puede ser nulo")
     private LocalDate releaseYear;
 
     @Column(name="enlace_wiki")
@@ -46,10 +52,11 @@ public class MovieEntity {
 
     @ManyToOne
     @JoinColumn(name = "genero_nombre", nullable = false, referencedColumnName = "nombre")
+    @NotNull(message = "Género no puede ser nulo")
     private GenreEntity genre;
 
     @ManyToMany(mappedBy = "favoriteMovies")
-    private Set<UserEntity> usersWhoFavorited= new HashSet<>();
+    private Set<UserEntity> usersWhoFavorited = new HashSet<>();
 
     @OneToMany(mappedBy = "movie")
     private Set<CastEntity> cast = new HashSet<>();

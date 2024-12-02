@@ -1,6 +1,7 @@
 package ufro.dci.filmaffinityfruna.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,15 +19,19 @@ public class UserEntity {
     @Id
     @Column(name = "id_usuario")
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private int id;
+    @NotNull(message = "ID no puede ser nulo")
+    private long id;
 
-    @Column(name = "nombre", nullable = false)
+    @Column(name = "nombre", nullable = false, length = 45)
+    @NotNull(message = "Nombre de usuario no puede ser nulo")
     private String username;
 
-    @Column(name = "correo", nullable = false, unique = true)
+    @Column(name = "correo", nullable = false, unique = true, length = 45)
+    @NotNull(message = "Correo no puede ser nulo")
     private String email;
 
-    @Column(name = "contrasennia", nullable = false)
+    @Column(name = "contrasennia", nullable = false, length = 45)
+    @NotNull(message = "Contraseña no puede ser nula")
     private String password;
 
     @ManyToMany
