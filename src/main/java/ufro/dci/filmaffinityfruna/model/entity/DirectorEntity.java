@@ -20,7 +20,7 @@ public class DirectorEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id_director", nullable = false)
+    @Column(name="id_director")
     @NotNull(message = "ID no puede ser nulo")
     private long id;
 
@@ -41,6 +41,9 @@ public class DirectorEntity {
 
     @Column(name="enlace_wiki", nullable = true)
     private String wikipediaLink;
+
+    @Column(name="imagen", nullable = true)
+    private String photoUrl;
 
     @OneToMany(mappedBy = "director")
     private Set<MovieEntity> moviesDirected = new HashSet<>();
