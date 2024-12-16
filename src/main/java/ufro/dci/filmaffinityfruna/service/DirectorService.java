@@ -2,9 +2,12 @@ package ufro.dci.filmaffinityfruna.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ufro.dci.filmaffinityfruna.model.dto.DirectorDTO;
+import ufro.dci.filmaffinityfruna.model.dto.MovieDTO;
 import ufro.dci.filmaffinityfruna.model.entity.DirectorEntity;
 import ufro.dci.filmaffinityfruna.repository.DirectorRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,4 +60,26 @@ public class DirectorService {
         }
     }
 
+    public List<DirectorDTO> getAllDirectors() {
+        List<DirectorDTO> directors = new ArrayList<>();
+        directorRepository.findAll().forEach(directorEntity -> directors.add(new DirectorDTO(directorEntity)));
+        return directors;
+    }
+
+    public DirectorDTO searchById(Long id) {
+        return directorRepository.findById(id)
+                .map(DirectorDTO::new)
+                .orElseThrow(() -> new IllegalArgumentException("Director no encontrado"));
+    }
+
+    public List<MovieDTO> getMoviesByDirectorId(Long id) {
+        return directorRepository.findById(id)
+                .map(DirectorEntity::getMoviesDirected)
+                .map(movies -> {
+                    List<MovieDTO> movieDTOS = new ArrayList<>();
+                    movies.forEach(movieEntity -> movieDTOS.add(new MovieDTO(movieEntity)));
+                    return movieDTOS;
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Director no encontrado"));
+    }
 }

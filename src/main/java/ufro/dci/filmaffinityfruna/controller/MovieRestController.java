@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ufro.dci.filmaffinityfruna.model.dto.MovieDTO;
 import ufro.dci.filmaffinityfruna.model.entity.MovieEntity;
 import ufro.dci.filmaffinityfruna.service.MovieService;
 import ufro.dci.filmaffinityfruna.utils.MessageConstant;
@@ -17,6 +18,11 @@ import java.util.List;
 public class MovieRestController {
 
     private final MovieService movieService;
+
+    @GetMapping("/find/{id}")
+    public ResponseEntity<MovieDTO> findMovieById(@PathVariable(name = "id") Long id) {
+        return new ResponseEntity<>(movieService.findMovieById(id), HttpStatus.OK);
+    }
 
     @GetMapping("/search")
     public ResponseEntity<List<MovieEntity>> searchMoviesByName(@RequestParam(name = "name") String name) {
@@ -40,6 +46,16 @@ public class MovieRestController {
     public ResponseEntity<String> deleteMovieById(@PathVariable(name = "id") Long id) {
         movieService.deleteMovieById(id);
         return new ResponseEntity<>(MessageConstant.DELETED, HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<MovieDTO>> getAllMovies() {
+        return new ResponseEntity<>(movieService.getAllMovies(), HttpStatus.OK);
+    }
+
+    @GetMapping("/best")
+    public ResponseEntity<List<MovieDTO>> getBestMovies() {
+        return new ResponseEntity<>(movieService.getBestMovies(), HttpStatus.OK);
     }
 
 
