@@ -36,7 +36,7 @@ public class UserEntity {
 
     @ManyToMany
     @JoinTable(
-            name = "usuario_has_pelicula",
+            name = "peliculas_vistas",
             joinColumns = @JoinColumn(name = "usuario_id_usuario", referencedColumnName = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "pelicula_id_pelicula", referencedColumnName = "id_pelicula")
     )

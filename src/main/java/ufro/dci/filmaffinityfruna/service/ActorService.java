@@ -2,9 +2,12 @@ package ufro.dci.filmaffinityfruna.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ufro.dci.filmaffinityfruna.model.dto.ActorDTO;
+import ufro.dci.filmaffinityfruna.model.dto.MovieDTO;
 import ufro.dci.filmaffinityfruna.model.entity.ActorEntity;
 import ufro.dci.filmaffinityfruna.repository.ActorRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,4 +56,30 @@ public class ActorService {
         }
     }
 
+    public List<ActorDTO> listAll() {
+        List<ActorDTO> actors = new ArrayList<>();
+        actorRepository.findAll().forEach(actorEntity -> actors.add(new ActorDTO(actorEntity)));
+        return actors;
+    }
+
+    public ActorDTO searchById(Long id) {
+        Optional<ActorEntity> actor = actorRepository.findById(id);
+        if (actor.isPresent()) {
+            return new ActorDTO(actor.get());
+        }else {
+            throw new IllegalArgumentException("Actor no encontrado");
+        }
+    }
+
+    public List<MovieDTO> getMoviesByActorId(Long actorId) {
+        Optional<ActorEntity> actor = actorRepository.findById(actorId);
+        if (actor.isPresent()) {
+            return actor.get().getCharactersPlayed().stream()
+                    .map(castEntity -> new MovieDTO(castEntity.getMovie()))
+                    .toList();
+        } else {
+            throw new IllegalArgumentException("Actor no encontrado");
+        }
+
+    }
 }

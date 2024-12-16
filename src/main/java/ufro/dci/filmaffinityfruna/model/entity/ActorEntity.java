@@ -42,6 +42,9 @@ public class ActorEntity {
     @Column(name="enlace_wiki")
     private String wikipediaLink;
 
+    @Column(name="imagen")
+    private String photoUrl;
+
     @OneToMany(mappedBy = "actor")
     private Set<CastEntity> charactersPlayed = new HashSet<>();
 }

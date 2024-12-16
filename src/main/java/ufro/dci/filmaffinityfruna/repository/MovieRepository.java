@@ -13,4 +13,5 @@ public interface MovieRepository extends CrudRepository<MovieEntity, Long> {
 
     boolean existsByName(String title);
 
+    Iterable<MovieEntity> findTop10ByOrderByRatingDesc();
 }

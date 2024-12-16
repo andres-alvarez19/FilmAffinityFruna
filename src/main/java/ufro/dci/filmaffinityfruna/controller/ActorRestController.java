@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ufro.dci.filmaffinityfruna.model.dto.ActorDTO;
+import ufro.dci.filmaffinityfruna.model.dto.MovieDTO;
 import ufro.dci.filmaffinityfruna.model.entity.ActorEntity;
 import ufro.dci.filmaffinityfruna.service.ActorService;
 import ufro.dci.filmaffinityfruna.utils.MessageConstant;
@@ -18,8 +20,20 @@ public class ActorRestController {
 
     private final ActorService actorService;
 
-    @GetMapping("/search")
-    public ResponseEntity<List<ActorEntity>> searchByName(@RequestParam(name = "name") String name) {
+    @GetMapping("/all")
+    public ResponseEntity<List<ActorDTO>> listAll() {
+        return new ResponseEntity<>(actorService.listAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/search/{id}")
+    public ResponseEntity<ActorDTO> searchByIdPathVariable(@PathVariable(name = "id") Long id) {
+        ActorDTO actor = actorService.searchById(id);
+        return new ResponseEntity<>(actor, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/search/name/{name}")
+    public ResponseEntity<List<ActorEntity>> searchByNamePathVariable(@PathVariable(name = "name") String name) {
         List<ActorEntity> actors = actorService.searchByName(name);
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
@@ -41,4 +55,12 @@ public class ActorRestController {
         actorService.deleteActorById(id);
         return new ResponseEntity<>(MessageConstant.DELETED, HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/movies")
+    public ResponseEntity<List<MovieDTO>> getMoviesByActorId(@PathVariable(name = "id") Long id) {
+        List<MovieDTO> movies = actorService.getMoviesByActorId(id);
+        return new ResponseEntity<>(movies, HttpStatus.OK);
+    }
+
+
 }
