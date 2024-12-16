@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
 import ufro.dci.filmaffinityfruna.repository.GenreRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class GenreService {
@@ -45,4 +48,9 @@ public class GenreService {
         }
     }
 
+    public List<GenreEntity> getAllGenres() {
+        List<GenreEntity> genres = new ArrayList<>();
+        genreRepository.findAll().forEach(genres::add);
+        return genres;
+    }
 }

@@ -9,6 +9,8 @@ import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
 import ufro.dci.filmaffinityfruna.service.GenreService;
 import ufro.dci.filmaffinityfruna.utils.MessageConstant;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/genre")
@@ -38,5 +40,11 @@ public class GenreRestController {
     public ResponseEntity<String> deleteGenreByName(@PathVariable(name = "name") String name) {
         genreService.deleteGenreByName(name);
         return new ResponseEntity<>(MessageConstant.DELETED, HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<GenreEntity>> getAllGenres() {
+        List<GenreEntity> genres = genreService.getAllGenres();
+        return new ResponseEntity<>(genres, HttpStatus.OK);
     }
 }
