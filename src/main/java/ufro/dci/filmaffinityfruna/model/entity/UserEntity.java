@@ -30,7 +30,7 @@ public class UserEntity {
     @NotNull(message = "Correo no puede ser nulo")
     private String email;
 
-    @Column(name = "contrasennia", nullable = false, length = 45)
+    @Column(name = "contrasennia", nullable = false)
     @NotNull(message = "Contraseña no puede ser nula")
     private String password;
 

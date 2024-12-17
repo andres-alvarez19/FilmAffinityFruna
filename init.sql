@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `film_affinity_fruna`.`usuario` (
                                                                `id_usuario` BIGINT NOT NULL AUTO_INCREMENT,
                                                                `nombre` VARCHAR(45) NOT NULL,
                                                                `correo` VARCHAR(45) NOT NULL,
-                                                               `contrasennia` VARCHAR(45) NOT NULL,
+                                                               `contrasennia` VARCHAR(255) NOT NULL,
                                                                PRIMARY KEY (`id_usuario`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
