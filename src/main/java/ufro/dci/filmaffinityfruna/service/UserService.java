@@ -1,6 +1,7 @@
 package ufro.dci.filmaffinityfruna.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ufro.dci.filmaffinityfruna.model.entity.UserEntity;
 import ufro.dci.filmaffinityfruna.repository.UserRepository;
@@ -12,12 +13,15 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public void register(UserEntity userEntity) {
+    public UserEntity register(UserEntity userEntity) {
         if (userRepository.existsByEmail(userEntity.getEmail())) {
             throw new IllegalArgumentException("El email ya está registrado");
         } else {
+            userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
             userRepository.save(userEntity);
+            return userEntity;
         }
     }
 
