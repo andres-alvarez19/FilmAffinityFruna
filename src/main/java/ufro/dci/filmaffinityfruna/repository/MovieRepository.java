@@ -9,8 +9,6 @@ import java.util.List;
 @Repository
 public interface MovieRepository extends CrudRepository<MovieEntity, Long> {
 
-    boolean existsByNameContainingIgnoreCase(String title);
-
     List<MovieEntity> findByNameContainingIgnoreCase(String title);
 
     List<MovieEntity> findByName(String title);
