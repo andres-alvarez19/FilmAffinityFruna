@@ -6,6 +6,7 @@ import ufro.dci.filmaffinityfruna.model.dto.DirectorDTO;
 import ufro.dci.filmaffinityfruna.model.dto.MovieDTO;
 import ufro.dci.filmaffinityfruna.model.entity.DirectorEntity;
 import ufro.dci.filmaffinityfruna.repository.DirectorRepository;
+import ufro.dci.filmaffinityfruna.utils.MessageConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +40,14 @@ public class DirectorService {
                 director.setWikipediaLink(modifiedDirector.getWikipediaLink());
                 directorRepository.save(director);
             } else {
-                throw new IllegalArgumentException("Director no encontrado");
+                throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
             }
         }
     }
 
     public void deleteDirectorById(long id) {
         if(!directorRepository.existsById(id)){
-            throw new IllegalArgumentException("Director no encontrado");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         }else{
             directorRepository.deleteById(id);
         }
@@ -54,7 +55,7 @@ public class DirectorService {
 
     public List<DirectorEntity> searchByName(String name) {
         if(!directorRepository.existsByName(name)){
-            throw new IllegalArgumentException("Director no encontrado");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         }else{
             return directorRepository.findByName(name);
         }
@@ -75,7 +76,7 @@ public class DirectorService {
     public DirectorDTO searchById(Long id) {
         return directorRepository.findById(id)
                 .map(DirectorDTO::new)
-                .orElseThrow(() -> new IllegalArgumentException("Director no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException(MessageConstant.NOT_FOUND));
     }
 
     public List<MovieDTO> getMoviesByDirectorId(Long id) {
@@ -86,6 +87,6 @@ public class DirectorService {
                     movies.forEach(movieEntity -> movieDTOS.add(new MovieDTO(movieEntity)));
                     return movieDTOS;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Director no encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException(MessageConstant.NOT_FOUND));
     }
 }

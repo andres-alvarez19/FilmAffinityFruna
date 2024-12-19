@@ -7,4 +7,5 @@ public class MessageConstant {
     public static final String REGISTERED = " registrado correctamente";
     public static final String UPDATED = " actualizado correctamente";
     public static final String DELETED = " eliminado correctamente";
+    public static final String NOT_FOUND = "no encontrado";
 }

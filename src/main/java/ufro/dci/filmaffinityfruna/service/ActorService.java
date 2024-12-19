@@ -6,6 +6,7 @@ import ufro.dci.filmaffinityfruna.model.dto.ActorDTO;
 import ufro.dci.filmaffinityfruna.model.dto.MovieDTO;
 import ufro.dci.filmaffinityfruna.model.entity.ActorEntity;
 import ufro.dci.filmaffinityfruna.repository.ActorRepository;
+import ufro.dci.filmaffinityfruna.utils.MessageConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +37,13 @@ public class ActorService {
             actor.setDateOfDeath(updatedActor.getDateOfDeath());
             actorRepository.save(actor);
         } else {
-            throw new IllegalArgumentException("Actor no encontrado");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         }
     }
 
     public void deleteActorById(long id) {
         if (!actorRepository.existsById(id)) {
-            throw new IllegalArgumentException("Actor no encontrado");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         } else {
             actorRepository.deleteById(id);
         }
@@ -50,7 +51,7 @@ public class ActorService {
 
     public List<ActorEntity> searchByName(String name) {
         if (!actorRepository.existsByName(name)) {
-            throw new IllegalArgumentException("Actor no encontrado");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         } else {
             return actorRepository.findByName(name);
         }
@@ -73,7 +74,7 @@ public class ActorService {
         if (actor.isPresent()) {
             return new ActorDTO(actor.get());
         }else {
-            throw new IllegalArgumentException("Actor no encontrado");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         }
     }
 
@@ -84,7 +85,7 @@ public class ActorService {
                     .map(castEntity -> new MovieDTO(castEntity.getMovie()))
                     .toList();
         } else {
-            throw new IllegalArgumentException("Actor no encontrado");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         }
 
     }
