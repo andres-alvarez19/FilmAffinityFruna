@@ -9,9 +9,14 @@ import java.util.List;
 
 @Repository
 public interface DirectorRepository extends CrudRepository<DirectorEntity, Long> {
+
+    boolean existsByNameContainingIgnoreCase(String name);
+
     boolean existsByName(String name);
 
     List<DirectorEntity> findByName(String name);
+
+    List<DirectorEntity> findByNameContainingIgnoreCase(String name);
 
     DirectorDTO findDirectorById(Long id);
 }

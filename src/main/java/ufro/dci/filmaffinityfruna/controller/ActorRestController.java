@@ -33,8 +33,8 @@ public class ActorRestController {
 
 
     @GetMapping("/search/name/{name}")
-    public ResponseEntity<List<ActorEntity>> searchByNamePathVariable(@PathVariable(name = "name") String name) {
-        List<ActorEntity> actors = actorService.searchByName(name);
+    public ResponseEntity<List<ActorDTO>> searchByNamePathVariable(@PathVariable(name = "name") String name) {
+        List<ActorDTO> actors = actorService.searchByNameIgnoreCase(name);
         return new ResponseEntity<>(actors, HttpStatus.OK);
     }
 

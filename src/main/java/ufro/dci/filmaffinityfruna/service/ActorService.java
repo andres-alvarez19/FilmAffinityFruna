@@ -56,6 +56,12 @@ public class ActorService {
         }
     }
 
+    public List<ActorDTO> searchByNameIgnoreCase(String name) {
+        List<ActorDTO> actors = new ArrayList<>();
+        actorRepository.findByNameContainingIgnoreCase(name).forEach(actorEntity -> actors.add(new ActorDTO(actorEntity)));
+        return actors;
+    }
+
     public List<ActorDTO> listAll() {
         List<ActorDTO> actors = new ArrayList<>();
         actorRepository.findAll().forEach(actorEntity -> actors.add(new ActorDTO(actorEntity)));

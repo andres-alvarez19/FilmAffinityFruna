@@ -60,6 +60,12 @@ public class DirectorService {
         }
     }
 
+    public List<DirectorDTO> searchByNameIgnoreCase(String name) {
+        List<DirectorDTO> directors = new ArrayList<>();
+        directorRepository.findByNameContainingIgnoreCase(name).forEach(directorEntity -> directors.add(new DirectorDTO(directorEntity)));
+        return directors;
+    }
+
     public List<DirectorDTO> getAllDirectors() {
         List<DirectorDTO> directors = new ArrayList<>();
         directorRepository.findAll().forEach(directorEntity -> directors.add(new DirectorDTO(directorEntity)));

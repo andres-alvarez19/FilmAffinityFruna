@@ -24,9 +24,9 @@ public class MovieRestController {
         return new ResponseEntity<>(movieService.findMovieById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<MovieEntity>> searchMoviesByName(@RequestParam(name = "name") String name) {
-        List<MovieEntity> movies = movieService.searchByName(name);
+    @GetMapping("/search/name/{name}")
+    public ResponseEntity<List<MovieDTO>> searchMoviesByName(@PathVariable(name = "name") String name) {
+        List<MovieDTO> movies = movieService.searchByNameIgnoreCase(name);
         return new ResponseEntity<>(movies, HttpStatus.OK);
     }
 

@@ -61,6 +61,13 @@ public class MovieService {
         }
     }
 
+    public List<MovieDTO> searchByNameIgnoreCase(String name) {
+        List<MovieEntity> movie = movieRepository.findByNameContainingIgnoreCase(name);
+        List<MovieDTO> movies = new ArrayList<>();
+        movie.forEach(movieEntity -> movies.add(new MovieDTO(movieEntity)));
+        return movies;
+    }
+
     public List<MovieDTO> getAllMovies() {
         List<MovieDTO> movies = new ArrayList<>();
         movieRepository.findAll().forEach(movieEntity -> movies.add(new MovieDTO(movieEntity)));
