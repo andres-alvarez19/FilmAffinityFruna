@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ufro.dci.filmaffinityfruna.model.dto.MovieDTO;
 import ufro.dci.filmaffinityfruna.model.entity.MovieEntity;
 import ufro.dci.filmaffinityfruna.repository.MovieRepository;
+import ufro.dci.filmaffinityfruna.utils.MessageConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +42,13 @@ public class MovieService {
             movie.setOverviewUrl(updatedMovie.getOverviewUrl());
             movieRepository.save(movie);
         } else {
-            throw new IllegalArgumentException("Película no encontrada");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         }
     }
 
     public void deleteMovieById(long id) {
         if (!movieRepository.existsById(id)) {
-            throw new IllegalArgumentException("Película no encontrada");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         } else {
             movieRepository.deleteById(id);
         }
@@ -55,10 +56,17 @@ public class MovieService {
 
     public List<MovieEntity> searchByName(String name) {
         if (!movieRepository.existsByName(name)) {
-            throw new IllegalArgumentException("Película no encontrada");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         } else {
             return movieRepository.findByName(name);
         }
+    }
+
+    public List<MovieDTO> searchByNameIgnoreCase(String name) {
+        List<MovieEntity> movie = movieRepository.findByNameContainingIgnoreCase(name);
+        List<MovieDTO> movies = new ArrayList<>();
+        movie.forEach(movieEntity -> movies.add(new MovieDTO(movieEntity)));
+        return movies;
     }
 
     public List<MovieDTO> getAllMovies() {
@@ -72,7 +80,7 @@ public class MovieService {
         if (movieEntity.isPresent()) {
             return new MovieDTO(movieEntity.get());
         } else {
-            throw new IllegalArgumentException("Película no encontrada");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         }
     }
 

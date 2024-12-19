@@ -6,14 +6,11 @@ import ufro.dci.filmaffinityfruna.model.entity.ActorEntity;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface ActorRepository extends CrudRepository<ActorEntity, Long> {
 
-    Set<ActorEntity> findByNationality(String country);
-
-    Set<ActorEntity> findByDateOfBirth(LocalDate date);
+    List<ActorEntity> findByNameContainingIgnoreCase(String name);
 
     boolean existsByName(String name);
 

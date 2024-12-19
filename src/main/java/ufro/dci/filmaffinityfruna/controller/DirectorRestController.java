@@ -38,9 +38,9 @@ public class DirectorRestController {
         return new ResponseEntity<>(MessageConstant.DELETED, HttpStatus.OK);
     }
 
-    @GetMapping("/searchByName/{name}")
-    public ResponseEntity<List<DirectorEntity>> searchByName(@PathVariable(name = "name") String name) {
-        List<DirectorEntity> director = directorService.searchByName(name);
+    @GetMapping("/search/name/{name}")
+    public ResponseEntity<List<DirectorDTO>> searchByName(@PathVariable(name = "name") String name) {
+        List<DirectorDTO> director = directorService.searchByNameIgnoreCase(name);
         return new ResponseEntity<>(director, HttpStatus.OK);
     }
 
