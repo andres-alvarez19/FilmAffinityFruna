@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ufro.dci.filmaffinityfruna.model.dto.DirectorDTO;
 import ufro.dci.filmaffinityfruna.model.dto.MovieDTO;
@@ -21,18 +22,21 @@ public class DirectorRestController {
     private final DirectorService directorService;
 
     @PostMapping("/register")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> register(@RequestBody @Valid DirectorEntity directorEntity) {
         directorService.register(directorEntity);
         return new ResponseEntity<>(MessageConstant.REGISTERED, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> update(@PathVariable(name = "id") Long id, @RequestBody DirectorEntity updatedDirector) {
         directorService.update(id, updatedDirector);
         return new ResponseEntity<>(MessageConstant.UPDATED, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteDirectorById(@PathVariable(name = "id") Long id) {
         directorService.deleteDirectorById(id);
         return new ResponseEntity<>(MessageConstant.DELETED, HttpStatus.OK);

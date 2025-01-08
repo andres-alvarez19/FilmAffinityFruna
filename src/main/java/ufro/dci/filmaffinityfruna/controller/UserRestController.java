@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ufro.dci.filmaffinityfruna.model.dto.LoginRequestDTO;
 import ufro.dci.filmaffinityfruna.model.dto.LoginResponseDTO;
@@ -39,5 +40,12 @@ public class UserRestController {
     public ResponseEntity<UserEntity> getUser(@PathVariable long id) {
         UserEntity user = userService.findById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/addRole")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> addRole(@PathVariable long id, @RequestParam String role) {
+        userService.addRole(role, id);
+        return new ResponseEntity<>(MessageConstant.UPDATED, HttpStatus.OK);
     }
 }

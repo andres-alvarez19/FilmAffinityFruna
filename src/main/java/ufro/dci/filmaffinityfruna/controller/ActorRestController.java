@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ufro.dci.filmaffinityfruna.model.dto.ActorDTO;
 import ufro.dci.filmaffinityfruna.model.dto.MovieDTO;
@@ -39,18 +40,21 @@ public class ActorRestController {
     }
 
     @PostMapping("/register")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> register(@RequestBody @Valid ActorEntity actorEntity) {
         actorService.register(actorEntity);
         return new ResponseEntity<>(MessageConstant.REGISTERED, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> update(@PathVariable(name = "id") Long id, @RequestBody ActorEntity updatedActor) {
         actorService.update(id, updatedActor);
         return new ResponseEntity<>(MessageConstant.UPDATED, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteActorById(@PathVariable(name = "id") Long id) {
         actorService.deleteActorById(id);
         return new ResponseEntity<>(MessageConstant.DELETED, HttpStatus.OK);

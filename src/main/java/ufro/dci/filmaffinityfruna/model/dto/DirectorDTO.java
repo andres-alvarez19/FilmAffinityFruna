@@ -4,13 +4,13 @@ import ufro.dci.filmaffinityfruna.model.entity.DirectorEntity;
 
 import java.time.LocalDate;
 
-public record DirectorDTO(long id, String name, String nationality, String dateOfBirth, String dateOfDeath, String wikipediaLink, String photoUrl) {
+public record DirectorDTO(long id, String name, String nationality, String dateOfBirth, String dateOfDeath, String wikipediaLink, String photoUrl, String biography) {
 
     public DirectorDTO(DirectorEntity directorEntity) {
         this(directorEntity.getId(), directorEntity.getName(), directorEntity.getNationality(),
              directorEntity.getDateOfBirth().toString(),
              directorEntity.getDateOfDeath() != null ? directorEntity.getDateOfDeath().toString() : null,
-             directorEntity.getWikipediaLink(), directorEntity.getPhotoUrl());
+             directorEntity.getWikipediaLink(), directorEntity.getPhotoUrl(), directorEntity.getBiography());
     }
 
     public DirectorEntity toEntity() {
@@ -24,6 +24,7 @@ public record DirectorDTO(long id, String name, String nationality, String dateO
         }
         directorEntity.setWikipediaLink(this.wikipediaLink);
         directorEntity.setPhotoUrl(this.photoUrl);
+        directorEntity.setBiography(this.biography);
         return directorEntity;
     }
 }

@@ -8,10 +8,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import ufro.dci.filmaffinityfruna.model.dto.LoginRequestDTO;
 import ufro.dci.filmaffinityfruna.model.dto.LoginResponseDTO;
-import ufro.dci.filmaffinityfruna.utils.JwtUtil;
+import ufro.dci.filmaffinityfruna.config.component.JwtUtil;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -25,7 +28,11 @@ public class AuthService {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequestDTO.getEmail(), loginRequestDTO.getPassword()));
 
-            String token = jwtUtil.generateToken(authentication.getName());
+            List<String> roles = authentication.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList();
+
+            String token = jwtUtil.generateToken(authentication.getName(), roles);
 
             return ResponseEntity.ok(new LoginResponseDTO(token, "Login exitoso"));
 

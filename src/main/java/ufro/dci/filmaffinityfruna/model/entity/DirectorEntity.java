@@ -36,13 +36,16 @@ public class DirectorEntity {
     @NotNull(message = "Fecha de nacimiento no puede ser nula")
     private LocalDate dateOfBirth;
 
-    @Column(name="fecha_defuncion", nullable = true)
+    @Column(name="biografia")
+    private String biography;
+
+    @Column(name="fecha_defuncion")
     private LocalDate dateOfDeath;
 
-    @Column(name="enlace_wiki", nullable = true)
+    @Column(name="enlace_wiki")
     private String wikipediaLink;
 
-    @Column(name="imagen", nullable = true)
+    @Column(name="imagen")
     private String photoUrl;
 
     @OneToMany(mappedBy = "director")

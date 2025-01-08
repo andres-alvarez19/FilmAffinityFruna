@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS `film_affinity_fruna`.`actor` (
                                                              `nombre` VARCHAR(45) NOT NULL,
                                                              `pais` VARCHAR(45) NOT NULL,
                                                              `fecha_nacimiento` DATE NOT NULL,
+                                                             `biografia`TEXT NULL DEFAULT NULL,
                                                              `fecha_defuncion` DATE NULL DEFAULT NULL,
                                                              `enlace_wiki` VARCHAR(80) NULL DEFAULT NULL,
                                                              `imagen` VARCHAR(45) NULL DEFAULT NULL,
@@ -34,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `film_affinity_fruna`.`director` (
                                                                 `nombre` VARCHAR(45) NOT NULL,
                                                                 `pais` VARCHAR(45) NOT NULL,
                                                                 `fecha_nacimiento` DATE NOT NULL,
+                                                                `biografia`TEXT NULL DEFAULT NULL,
                                                                 `fecha_defuncion` DATE NULL DEFAULT NULL,
                                                                 `enlace_wiki` VARCHAR(80) NULL DEFAULT NULL,
                                                                 `imagen` VARCHAR(45) NULL DEFAULT NULL,
@@ -89,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `film_affinity_fruna`.`pelicula` (
 CREATE TABLE IF NOT EXISTS `film_affinity_fruna`.`usuario` (
                                                                `id_usuario` BIGINT NOT NULL AUTO_INCREMENT,
                                                                `nombre` VARCHAR(45) NOT NULL,
-                                                               `correo` VARCHAR(45) NOT NULL,
+                                                               `correo` VARCHAR(45) UNIQUE NOT NULL,
                                                                `contrasennia` VARCHAR(255) NOT NULL,
                                                                PRIMARY KEY (`id_usuario`))
     ENGINE = InnoDB
@@ -158,6 +160,34 @@ CREATE TABLE IF NOT EXISTS `film_affinity_fruna`.`review` (
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 
+-- -----------------------------------------------------
+-- Table `film_affinity_fruna`.`rol`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `film_affinity_fruna`.`rol` (
+        `id_rol` INT NOT NULL AUTO_INCREMENT,
+        `nombre` VARCHAR(45) NOT NULL,
+        PRIMARY KEY (`id_rol`))
+
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb3;
+
+-- -----------------------------------------------------
+-- Table `film_affinity_fruna`.`usuario_has_rol`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `film_affinity_fruna`.`usuario_has_rol` (
+        `usuario_id_usuario` BIGINT NOT NULL,
+        `rol_id_rol` INT NOT NULL,
+        PRIMARY KEY (`usuario_id_usuario`, `rol_id_rol`),
+        INDEX `fk_usuario_has_rol_rol1_idx` (`rol_id_rol` ASC) VISIBLE,
+        INDEX `fk_usuario_has_rol_usuario1_idx` (`usuario_id_usuario` ASC) VISIBLE,
+        CONSTRAINT `fk_usuario_has_rol_rol1`
+        FOREIGN KEY (`rol_id_rol`)
+        REFERENCES `film_affinity_fruna`.`rol` (`id_rol`),
+        CONSTRAINT `fk_usuario_has_rol_usuario1`
+        FOREIGN KEY (`usuario_id_usuario`)
+        REFERENCES `film_affinity_fruna`.`usuario` (`id_usuario`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb3;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
