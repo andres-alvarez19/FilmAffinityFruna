@@ -5,8 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import ufro.dci.filmaffinityfruna.model.dto.GenreDTO;
 import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
 import ufro.dci.filmaffinityfruna.repository.GenreRepository;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -19,37 +22,35 @@ class GenreServiceTest {
     @Mock
     private GenreRepository genreRepository;
 
-    private GenreEntity genreEntity;
+    private GenreDTO genreDTO;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        genreEntity = new GenreEntity();
-        genreEntity.setName("Género Test");
+        genreDTO = new GenreDTO("Género Test", "Descripción Test");
     }
 
     @Test
     void testRegistrarGenero_Exito() {
-        when(genreRepository.existsByName(genreEntity.getName())).thenReturn(false);
+        when(genreRepository.existsByName(genreDTO.name())).thenReturn(false);
 
-        genreService.register(genreEntity);
+        genreService.register(genreDTO.toEntity());
 
-        verify(genreRepository, times(1)).save(genreEntity);
+        verify(genreRepository, times(1)).save(any(GenreEntity.class));
     }
 
     @Test
     void testActualizarGenero_Exito() {
         String nombre = "Género Test";
-        GenreEntity generoModificado = new GenreEntity();
-        generoModificado.setName("Género Modificado");
+        GenreDTO generoModificado = new GenreDTO("Género Modificado", "Descripción Modificada");
 
         when(genreRepository.existsByName(nombre)).thenReturn(true);
-        when(genreRepository.findByName(nombre)).thenReturn(genreEntity);
+        when(genreRepository.findByName(nombre)).thenReturn(Optional.of(genreDTO));
 
-        genreService.update(nombre, generoModificado);
+        genreService.update(nombre, generoModificado.toEntity());
 
-        assertEquals("Género Modificado", genreEntity.getName());
-        verify(genreRepository, times(1)).save(genreEntity);
+        assertEquals("Género Modificado", genreDTO.name());
+        verify(genreRepository, times(1)).save(any(GenreEntity.class));
     }
 
     @Test
@@ -66,13 +67,11 @@ class GenreServiceTest {
     void testBuscarPorNombre_Exito() {
         String nombre = "Género Test";
         when(genreRepository.existsByName(nombre)).thenReturn(true);
-        when(genreRepository.findByName(nombre)).thenReturn(genreEntity);
+        when(genreRepository.findByName(nombre)).thenReturn(Optional.of(genreDTO));
 
-        GenreEntity resultado = genreService.searchByName(nombre);
+        GenreDTO resultado = genreService.searchByName(nombre);
 
         assertNotNull(resultado);
-        assertEquals(genreEntity.getName(), resultado.getName());
+        assertEquals(genreDTO.name(), resultado.name());
     }
-
 }
-
