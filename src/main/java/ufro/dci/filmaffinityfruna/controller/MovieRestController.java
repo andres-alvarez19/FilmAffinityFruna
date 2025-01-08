@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ufro.dci.filmaffinityfruna.model.dto.MovieDTO;
 import ufro.dci.filmaffinityfruna.model.entity.MovieEntity;
@@ -31,6 +32,7 @@ public class MovieRestController {
     }
 
     @PostMapping("/register")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> register(@RequestBody @Valid MovieEntity movieEntity) {
         movieService.register(movieEntity);
         return new ResponseEntity<>(MessageConstant.REGISTERED, HttpStatus.OK);
