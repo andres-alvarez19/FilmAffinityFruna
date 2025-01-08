@@ -36,6 +36,9 @@ public class ActorEntity {
     @NotNull(message = "Fecha de nacimiento no puede ser nula")
     private LocalDate dateOfBirth;
 
+    @Column(name="biografia")
+    private String biography;
+
     @Column(name="fecha_defuncion")
     private LocalDate dateOfDeath;
 
