@@ -14,7 +14,7 @@ public class DataInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (roleRepository.findByName("ROLE_USER").isEmpty()) {
             RoleEntity role = new RoleEntity();
             role.setName("ROLE_USER");

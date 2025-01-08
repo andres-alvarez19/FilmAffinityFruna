@@ -27,36 +27,36 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private CustomUserDetailsService userDetailsService;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
+   @Override
+protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain chain)
+        throws ServletException, IOException {
 
-        final String authorizationHeader = request.getHeader("Authorization");
+    final String authorizationHeader = request.getHeader("Authorization");
 
-        String email = null;
-        String jwt = null;
+    String email = null;
+    String jwt = null;
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            email = jwtUtil.extractUsername(jwt);
-        }
-
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                List<GrantedAuthority> authorities = jwtUtil.extractRoles(jwt).stream()
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, authorities);
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        }
-
-        chain.doFilter(request, response);
+    if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+        jwt = authorizationHeader.substring(7);
+        email = jwtUtil.extractUsername(jwt);
     }
+
+    if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+
+        if (jwtUtil.validateToken(jwt, userDetails)) {
+            List<GrantedAuthority> authorities = jwtUtil.extractRoles(jwt).stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, authorities);
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+    }
+
+    chain.doFilter(request, response);
+}
 
 }
