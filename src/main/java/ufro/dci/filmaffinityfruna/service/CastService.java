@@ -8,7 +8,6 @@ import ufro.dci.filmaffinityfruna.repository.CastRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -18,18 +17,18 @@ public class CastService {
 
     private final DirectorService directorService;
 
-    public List<CastEntity> getAllCasts() {
-        List<CastEntity> casts = new ArrayList<>();
-        castRepository.findAll().forEach(casts::add);
+    public List<CastDTO> getAllCasts() {
+        List<CastDTO> casts = new ArrayList<>();
+        castRepository.findAll().forEach(castEntity -> casts.add(new CastDTO(castEntity)));
         return casts;
     }
 
-    public Optional<CastEntity> getCastById(Long id) {
-        return castRepository.findById(id);
+    public CastDTO getCastById(Long id) {
+        return castRepository.findById(id).map(CastDTO::new).orElse(null);
     }
 
-    public CastEntity saveCast(CastEntity cast) {
-        return castRepository.save(cast);
+    public CastEntity saveCast(CastDTO cast) {
+        return castRepository.save(cast.toEntity());
     }
 
     public void deleteCast(Long id) {

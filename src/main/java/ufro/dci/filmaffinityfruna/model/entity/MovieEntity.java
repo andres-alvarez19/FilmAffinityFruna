@@ -28,7 +28,7 @@ public class MovieEntity {
     @NotNull(message = "Nombre no puede ser nulo")
     private String name;
 
-    @Column(name="sinopsis", nullable = true)
+    @Column(name="sinopsis")
     private String synopsis;
 
     @Column(name="pais")

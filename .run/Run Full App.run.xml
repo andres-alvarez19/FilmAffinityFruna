@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Full App" type="CompoundRunConfigurationType">
+    <toRun name="dev" type="js.build_tools.npm" />
+    <toRun name="FilmAffinityFrunaApplication" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

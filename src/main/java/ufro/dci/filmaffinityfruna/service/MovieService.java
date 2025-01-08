@@ -21,6 +21,8 @@ public class MovieService {
         if (movieRepository.existsByName(movieEntity.getName())) {
             throw new IllegalArgumentException("La película ya está registrada");
         } else {
+            movieEntity.setOverviewUrl("/uploads/images/movies/overview" + movieEntity.getName().toLowerCase().replace(" ", "-") + "overview.jpg");
+            movieEntity.setPhotoUrl("/uploads/images/movies/" + movieEntity.getName().toLowerCase().replace(" ", "-") + ".jpg");
             movieRepository.save(movieEntity);
         }
     }

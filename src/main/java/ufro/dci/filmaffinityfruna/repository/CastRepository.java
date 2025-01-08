@@ -10,4 +10,5 @@ public interface CastRepository extends CrudRepository<CastEntity, Long> {
     List<CastEntity> findByMovieId(Long id);
 
     List<CastEntity> findByActorId(Long id);
+
 }

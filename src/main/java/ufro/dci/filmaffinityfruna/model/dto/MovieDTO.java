@@ -3,6 +3,8 @@ package ufro.dci.filmaffinityfruna.model.dto;
 import ufro.dci.filmaffinityfruna.model.entity.MovieEntity;
 import ufro.dci.filmaffinityfruna.model.entity.DirectorEntity;
 import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
+import ufro.dci.filmaffinityfruna.service.DirectorService;
+import ufro.dci.filmaffinityfruna.service.GenreService;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,6 +12,9 @@ import java.time.LocalTime;
 public record MovieDTO(long id, String name, String synopsis, String country
         , String duration, String releaseYear, String wikipediaLink, String photoUrl
         , long directorId, String genreName, String trailerUrl, String overviewUrl) {
+
+    private static DirectorService directorService;
+    private static GenreService genreService;
 
     public MovieDTO(MovieEntity movieEntity) {
         this(movieEntity.getId(), movieEntity.getName(), movieEntity.getSynopsis(), movieEntity.getCountry(),
@@ -19,7 +24,7 @@ public record MovieDTO(long id, String name, String synopsis, String country
              movieEntity.getTrailerUrl(), movieEntity.getOverviewUrl());
     }
 
-    public MovieEntity toEntity(DirectorEntity director, GenreEntity genre) {
+    public MovieEntity toEntity() {
         MovieEntity movieEntity = new MovieEntity();
         movieEntity.setId(this.id);
         movieEntity.setName(this.name);
@@ -29,10 +34,26 @@ public record MovieDTO(long id, String name, String synopsis, String country
         movieEntity.setReleaseYear(LocalDate.parse(this.releaseYear));
         movieEntity.setWikipediaLink(this.wikipediaLink);
         movieEntity.setPhotoUrl(this.photoUrl);
-        movieEntity.setDirector(director);
-        movieEntity.setGenre(genre);
+        movieEntity.setDirector(fetchDirectorById(this.directorId));
+        movieEntity.setGenre(fetchGenreByName(this.genreName));
         movieEntity.setTrailerUrl(this.trailerUrl);
         movieEntity.setOverviewUrl(this.overviewUrl);
         return movieEntity;
+    }
+
+    private DirectorEntity fetchDirectorById(long directorId) {
+        return directorService.searchById(directorId).toEntity();
+    }
+
+    private GenreEntity fetchGenreByName(String genreName) {
+        return genreService.searchByName(genreName).toEntity();
+    }
+
+    public static void setDirectorService(DirectorService directorService) {
+        MovieDTO.directorService = directorService;
+    }
+
+    public static void setGenreService(GenreService genreService) {
+        MovieDTO.genreService = genreService;
     }
 }
