@@ -2,9 +2,12 @@ package ufro.dci.filmaffinityfruna.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ufro.dci.filmaffinityfruna.model.dto.MovieDTO;
 import ufro.dci.filmaffinityfruna.model.entity.MovieEntity;
 import ufro.dci.filmaffinityfruna.repository.MovieRepository;
+import ufro.dci.filmaffinityfruna.utils.MessageConstant;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +21,8 @@ public class MovieService {
         if (movieRepository.existsByName(movieEntity.getName())) {
             throw new IllegalArgumentException("La película ya está registrada");
         } else {
+            movieEntity.setOverviewUrl("/uploads/images/movies/overview" + movieEntity.getName().toLowerCase().replace(" ", "-") + "overview.jpg");
+            movieEntity.setPhotoUrl("/uploads/images/movies/" + movieEntity.getName().toLowerCase().replace(" ", "-") + ".jpg");
             movieRepository.save(movieEntity);
         }
     }
@@ -27,19 +32,25 @@ public class MovieService {
         if (existingMovie.isPresent()) {
             MovieEntity movie = existingMovie.get();
             movie.setName(updatedMovie.getName());
+            movie.setSynopsis(updatedMovie.getSynopsis());
+            movie.setCountry(updatedMovie.getCountry());
             movie.setReleaseYear(updatedMovie.getReleaseYear());
             movie.setDuration(updatedMovie.getDuration());
             movie.setGenre(updatedMovie.getGenre());
             movie.setCast(updatedMovie.getCast());
+            movie.setDirector(updatedMovie.getDirector());
+            movie.setPhotoUrl(updatedMovie.getPhotoUrl());
+            movie.setTrailerUrl(updatedMovie.getTrailerUrl());
+            movie.setOverviewUrl(updatedMovie.getOverviewUrl());
             movieRepository.save(movie);
         } else {
-            throw new IllegalArgumentException("Película no encontrada");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         }
     }
 
     public void deleteMovieById(long id) {
         if (!movieRepository.existsById(id)) {
-            throw new IllegalArgumentException("Película no encontrada");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         } else {
             movieRepository.deleteById(id);
         }
@@ -47,9 +58,37 @@ public class MovieService {
 
     public List<MovieEntity> searchByName(String name) {
         if (!movieRepository.existsByName(name)) {
-            throw new IllegalArgumentException("Película no encontrada");
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
         } else {
             return movieRepository.findByName(name);
         }
+    }
+
+    public List<MovieDTO> searchByNameIgnoreCase(String name) {
+        List<MovieEntity> movie = movieRepository.findByNameContainingIgnoreCase(name);
+        List<MovieDTO> movies = new ArrayList<>();
+        movie.forEach(movieEntity -> movies.add(new MovieDTO(movieEntity)));
+        return movies;
+    }
+
+    public List<MovieDTO> getAllMovies() {
+        List<MovieDTO> movies = new ArrayList<>();
+        movieRepository.findAll().forEach(movieEntity -> movies.add(new MovieDTO(movieEntity)));
+        return movies;
+    }
+
+    public MovieDTO findMovieById(Long id) {
+        Optional<MovieEntity> movieEntity = movieRepository.findById(id);
+        if (movieEntity.isPresent()) {
+            return new MovieDTO(movieEntity.get());
+        } else {
+            throw new IllegalArgumentException(MessageConstant.NOT_FOUND);
+        }
+    }
+
+    public List<MovieDTO> getBestMovies() {
+        List<MovieDTO> movies = new ArrayList<>();
+        movieRepository.findTop10ByOrderByRatingDesc().forEach(movieEntity -> movies.add(new MovieDTO(movieEntity)));
+        return movies;
     }
 }

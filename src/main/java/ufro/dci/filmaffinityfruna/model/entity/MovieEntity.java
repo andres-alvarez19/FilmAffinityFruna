@@ -28,12 +28,7 @@ public class MovieEntity {
     @NotNull(message = "Nombre no puede ser nulo")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "director_id_director", nullable = false)
-    @NotNull(message = "Director no puede ser nulo")
-    private DirectorEntity director;
-
-    @Column(name="sinopsis", nullable = true)
+    @Column(name="sinopsis")
     private String synopsis;
 
     @Column(name="pais")
@@ -49,6 +44,23 @@ public class MovieEntity {
 
     @Column(name="enlace_wiki")
     private String wikipediaLink;
+
+    @Column(name="imagen")
+    private String photoUrl;
+
+    @Column(name="rating")
+    private Float rating;
+
+    @Column(name="url_trailer")
+    private String trailerUrl;
+
+    @Column(name="url_overview")
+    private String overviewUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "director_id_director", nullable = false)
+    @NotNull(message = "Director no puede ser nulo")
+    private DirectorEntity director;
 
     @ManyToOne
     @JoinColumn(name = "genero_nombre", nullable = false, referencedColumnName = "nombre")

@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ufro.dci.filmaffinityfruna.model.entity.UserEntity;
+import ufro.dci.filmaffinityfruna.service.AuthService;
 import ufro.dci.filmaffinityfruna.service.UserService;
 import ufro.dci.filmaffinityfruna.utils.LocalDateAdapter;
 import ufro.dci.filmaffinityfruna.utils.LocalTimeAdapter;
@@ -31,11 +32,14 @@ class UserRestControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private AuthService authService;
+
     private Gson gson;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(new UserRestController(userService)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new UserRestController(userService, authService)).build();
         gson = new GsonBuilder()
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())

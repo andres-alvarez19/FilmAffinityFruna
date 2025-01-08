@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
 import ufro.dci.filmaffinityfruna.repository.GenreRepository;
+import ufro.dci.filmaffinityfruna.utils.MessageConstant;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -19,30 +24,41 @@ public class GenreService {
         }
     }
 
-    public void update(String name, GenreEntity updatedGenre) {
+  public void update(String name, GenreEntity updatedGenre) {
         if (genreRepository.existsByName(name)) {
-            GenreEntity genre = genreRepository.findByName(name);
-            genre.setName(updatedGenre.getName());
-            genreRepository.save(genre);
+            Optional<ufro.dci.filmaffinityfruna.model.dto.GenreDTO> genreOptional = genreRepository.findByName(name);
+            if (genreOptional.isPresent()) {
+                GenreEntity genre = genreOptional.get().toEntity();
+                genre.setName(updatedGenre.getName());
+                genreRepository.save(genre);
+            } else {
+                throw new IllegalArgumentException(MessageConstant.GENRE_NOT_FOUND);
+            }
         } else {
-            throw new IllegalArgumentException("Género no encontrado");
+            throw new IllegalArgumentException(MessageConstant.GENRE_NOT_FOUND);
         }
     }
 
     public void deleteGenreByName(String name) {
         if (!genreRepository.existsByName(name)) {
-            throw new IllegalArgumentException("Género no encontrado");
+            throw new IllegalArgumentException(MessageConstant.GENRE_NOT_FOUND);
         } else {
             genreRepository.deleteByName(name);
         }
     }
 
-    public GenreEntity searchByName(String name) {
-        if (!genreRepository.existsByName(name)) {
-            throw new IllegalArgumentException("Género no encontrado");
+    public ufro.dci.filmaffinityfruna.model.dto.GenreDTO searchByName(String name) {
+        Optional<ufro.dci.filmaffinityfruna.model.dto.GenreDTO> genreOptional = genreRepository.findByName(name);
+        if (genreOptional.isPresent()) {
+            return genreOptional.get();
         } else {
-            return genreRepository.findByName(name);
+            throw new IllegalArgumentException(MessageConstant.GENRE_NOT_FOUND);
         }
     }
 
-}
+        public List<ufro.dci.filmaffinityfruna.model.dto.GenreDTO> getAllGenres() {
+            List<GenreEntity> genres = new ArrayList<>();
+            genreRepository.findAll().forEach(genres::add);
+            return genres.stream().map(ufro.dci.filmaffinityfruna.model.dto.GenreDTO::fromEntity).toList();
+        }
+    }

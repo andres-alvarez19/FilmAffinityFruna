@@ -10,6 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import ufro.dci.filmaffinityfruna.model.dto.GenreDTO;
 import ufro.dci.filmaffinityfruna.model.entity.GenreEntity;
 import ufro.dci.filmaffinityfruna.service.GenreService;
 import ufro.dci.filmaffinityfruna.utils.LocalDateAdapter;
@@ -40,16 +41,14 @@ class GenreRestControllerTest {
                 .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
                 .registerTypeAdapter(LocalTime.class, new LocalTimeAdapter())
                 .create();
-
     }
 
     @Test
     void testSearchByName() throws Exception {
         String name = "Action";
-        GenreEntity genreEntity = new GenreEntity();
-        genreEntity.setName(name);
+        GenreDTO genreDTO = new GenreDTO(name, "Description");
 
-        when(genreService.searchByName(name)).thenReturn(genreEntity);
+        when(genreService.searchByName(name)).thenReturn(genreDTO);
 
         mockMvc.perform(get("/genre/search")
                 .param("name", name)

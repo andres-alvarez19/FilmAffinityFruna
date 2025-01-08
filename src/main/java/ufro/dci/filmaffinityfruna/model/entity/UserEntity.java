@@ -30,13 +30,21 @@ public class UserEntity {
     @NotNull(message = "Correo no puede ser nulo")
     private String email;
 
-    @Column(name = "contrasennia", nullable = false, length = 45)
+    @Column(name = "contrasennia", nullable = false)
     @NotNull(message = "Contraseña no puede ser nula")
     private String password;
 
     @ManyToMany
     @JoinTable(
-            name = "usuario_has_pelicula",
+            name = "usuario_has_rol",
+            joinColumns = @JoinColumn(name = "usuario_id_usuario", referencedColumnName = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "rol_id_rol", referencedColumnName = "id_rol")
+    )
+    private Set<RoleEntity> roles = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "peliculas_vistas",
             joinColumns = @JoinColumn(name = "usuario_id_usuario", referencedColumnName = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "pelicula_id_pelicula", referencedColumnName = "id_pelicula")
     )
