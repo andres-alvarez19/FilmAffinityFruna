@@ -49,11 +49,4 @@ public record MovieDTO(long id, String name, String synopsis, String country
         return genreService.searchByName(genreName).toEntity();
     }
 
-    public static void setDirectorService(DirectorService directorService) {
-        MovieDTO.directorService = directorService;
-    }
-
-    public static void setGenreService(GenreService genreService) {
-        MovieDTO.genreService = genreService;
-    }
 }

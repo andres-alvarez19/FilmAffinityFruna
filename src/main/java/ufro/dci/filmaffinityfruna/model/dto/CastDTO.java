@@ -32,11 +32,4 @@ public record CastDTO(long id, String characterName, long actorId, long movieId)
         return movieService.findMovieById(movieId).toEntity();
     }
 
-    public static void setActorService(ActorService actorService) {
-        CastDTO.actorService = actorService;
-    }
-
-    public static void setMovieService(MovieService movieService) {
-        CastDTO.movieService = movieService;
-    }
 }
