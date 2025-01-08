@@ -36,6 +36,14 @@ public class UserEntity {
 
     @ManyToMany
     @JoinTable(
+            name = "usuario_has_rol",
+            joinColumns = @JoinColumn(name = "usuario_id_usuario", referencedColumnName = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "rol_id_rol", referencedColumnName = "id_rol")
+    )
+    private Set<RoleEntity> roles = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
             name = "peliculas_vistas",
             joinColumns = @JoinColumn(name = "usuario_id_usuario", referencedColumnName = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "pelicula_id_pelicula", referencedColumnName = "id_pelicula")
